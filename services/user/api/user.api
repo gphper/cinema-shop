@@ -1,0 +1,15 @@
+type (
+	LoginReq {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	LoginResp {
+		Token string `json:"token"`
+	}
+)
+
+service user-api {
+	@handler login
+	post /api/user/login (LoginReq) returns (LoginResp)
+}

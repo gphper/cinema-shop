@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package user;
+option go_package="./user";
+
+message UserInfo {
+  string name = 1;
+  string email = 2;
+}
+
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
+message GetUserByEmailResponse {
+  string password = 1;
+  string salt = 2;
+  int64 id = 3;
+}
+
+message GetUserByIDRequest{
+  int64 id = 1;
+}
+
+message GetUserByIdResponse{
+  UserInfo info = 1;
+}
+
+service User {
+  // 根据邮箱获取用户秘钥和密码
+  rpc GetUserByEmail(GetUserByEmailRequest) returns(GetUserByEmailResponse);
+
+  // 根据ID获取信息
+  rpc GetUserByID(GetUserByIDRequest) returns(GetUserByIdResponse);
+}
