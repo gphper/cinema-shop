@@ -35,5 +35,6 @@ func (l *GetUserByEmailLogic) GetUserByEmail(in *user.GetUserByEmailRequest) (*u
 		Password: userInfo.Password,
 		Salt:     userInfo.Salt,
 		Id:       userInfo.Id,
+		Name:     userInfo.Name,
 	}, nil
 }

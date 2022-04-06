@@ -16,6 +16,7 @@ message GetUserByEmailResponse {
   string password = 1;
   string salt = 2;
   int64 id = 3;
+  string name = 4;
 }
 
 message GetUserByIDRequest{
