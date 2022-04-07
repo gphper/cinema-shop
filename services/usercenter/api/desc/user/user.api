@@ -1,0 +1,37 @@
+syntax = "v1"
+
+info (
+	title: "用户"
+	desc: "用户登录模块"
+	author: "gphper"
+	email: "570165887@qq.com"
+)
+
+type (
+	LoginReq {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	LoginResp {
+		Id           int64  `json:"id"`
+		Name         string `json:"name"`
+		AccessToken  string `json:"accessToken"`
+		AccessExpire int64  `json:"accessExpire"`
+		RefreshToken int64  `json:"refreshAfter"`
+	}
+)
+
+type (
+	RegisterReq {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		Name string `json:"name"`
+	}
+
+	RegisterResp {
+		AccessToken  string `json:"accessToken"`
+		AccessExpire int64  `json:"accessExpire"`
+		RefreshToken int64  `json:"refreshAfter"`
+	}
+)

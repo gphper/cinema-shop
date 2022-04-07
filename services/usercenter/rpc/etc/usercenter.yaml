@@ -1,0 +1,12 @@
+Name: usercenter.rpc
+ListenOn: 127.0.0.1:8080
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: usercenter.rpc
+Mysql:
+  DataSource: root:123456@tcp(127.0.0.1:3306)/cinema_shop?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: localhost:6379
+    Pass: ""
+    Type: node

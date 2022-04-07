@@ -1,0 +1,21 @@
+syntax = "v1"
+
+info (
+	title: "用户"
+	desc: "用户登录模块"
+	author: "gphper"
+	email: "570165887@qq.com"
+)
+
+import (
+	"user/user.api"
+)
+
+service usercenter-api {
+	
+	@handler login
+	post /api/user/login (LoginReq) returns (LoginResp)
+	
+	@handler register
+	post /api/user/register (RegisterReq) returns (RegisterResp)
+}
