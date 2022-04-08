@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
 	"cinema-shop/services/usercenter/api/internal/svc"
 	"cinema-shop/services/usercenter/api/internal/types"
@@ -31,7 +32,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		Name:     req.Name,
 		Password: req.Password,
 	})
-
+	fmt.Println(registResp)
 	if err != nil {
 		return
 	}
@@ -39,6 +40,6 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	return &types.RegisterResp{
 		AccessExpire: registResp.Expire,
 		AccessToken:  registResp.Token,
-		RefreshToken: resp.RefreshToken,
+		RefreshToken: registResp.Reftoken,
 	}, nil
 }

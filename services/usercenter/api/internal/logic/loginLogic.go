@@ -39,7 +39,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		Id:           userResp.Id,
 		Name:         userResp.Name,
 		AccessToken:  "",
-		AccessExpire: l.svcCtx.Config.Auth.AccessExpire,
+		AccessExpire: 10,
 	}, nil
 
 }

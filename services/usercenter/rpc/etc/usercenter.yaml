@@ -1,5 +1,5 @@
 Name: usercenter.rpc
-ListenOn: 127.0.0.1:8080
+ListenOn: 127.0.0.1:8080 
 Etcd:
   Hosts:
   - 127.0.0.1:2379
@@ -10,3 +10,6 @@ CacheRedis:
   - Host: localhost:6379
     Pass: ""
     Type: node
+AuthConfig:
+  AccessSecret: "a522383d-983f-4914-9d12-0cdc439c9a5c"
+  AccessExpire: 7200

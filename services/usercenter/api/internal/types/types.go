@@ -11,7 +11,7 @@ type LoginResp struct {
 	Name         string `json:"name"`
 	AccessToken  string `json:"accessToken"`
 	AccessExpire int64  `json:"accessExpire"`
-	RefreshToken int64  `json:"refreshAfter"`
+	RefreshToken string `json:"refreshAfter"`
 }
 
 type RegisterReq struct {
@@ -23,5 +23,5 @@ type RegisterReq struct {
 type RegisterResp struct {
 	AccessToken  string `json:"accessToken"`
 	AccessExpire int64  `json:"accessExpire"`
-	RefreshToken int64  `json:"refreshAfter"`
+	RefreshToken string `json:"refreshAfter"`
 }

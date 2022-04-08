@@ -1,9 +1,6 @@
 Name: usercenter-api
 Host: 0.0.0.0
 Port: 8888
-Auth:
-  AccessSecret: "a522383d-983f-4914-9d12-0cdc439c9a5c"
-  AccessExpire: 7200
 UserRpcConf:
   Etcd:
     Hosts:
