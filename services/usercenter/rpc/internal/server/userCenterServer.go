@@ -34,6 +34,12 @@ func (s *UserCenterServer) RegisterUser(ctx context.Context, in *usercenter.Regi
 	return l.RegisterUser(in)
 }
 
+//  刷新Token
+func (s *UserCenterServer) Refresh(ctx context.Context, in *usercenter.RefreshRequest) (*usercenter.RefreshResponse, error) {
+	l := logic.NewRefreshLogic(ctx, s.svcCtx)
+	return l.Refresh(in)
+}
+
 //  根据ID获取信息
 func (s *UserCenterServer) GetUserByID(ctx context.Context, in *usercenter.GetUserByIDRequest) (*usercenter.GetUserByIdResponse, error) {
 	l := logic.NewGetUserByIDLogic(ctx, s.svcCtx)

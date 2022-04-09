@@ -26,6 +26,8 @@ type UserCenterClient interface {
 	GetAccessToken(ctx context.Context, in *GetAccessTokenRequest, opts ...grpc.CallOption) (*GetAccessTokenResponse, error)
 	// 注册
 	RegisterUser(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+	// 刷新Token
+	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 	// 根据ID获取信息
 	GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error)
 }
@@ -56,6 +58,15 @@ func (c *userCenterClient) RegisterUser(ctx context.Context, in *RegisterRequest
 	return out, nil
 }
 
+func (c *userCenterClient) Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error) {
+	out := new(RefreshResponse)
+	err := c.cc.Invoke(ctx, "/usercenter.UserCenter/Refresh", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userCenterClient) GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error) {
 	out := new(GetUserByIdResponse)
 	err := c.cc.Invoke(ctx, "/usercenter.UserCenter/GetUserByID", in, out, opts...)
@@ -73,6 +84,8 @@ type UserCenterServer interface {
 	GetAccessToken(context.Context, *GetAccessTokenRequest) (*GetAccessTokenResponse, error)
 	// 注册
 	RegisterUser(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	// 刷新Token
+	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
 	// 根据ID获取信息
 	GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIdResponse, error)
 	mustEmbedUnimplementedUserCenterServer()
@@ -87,6 +100,9 @@ func (UnimplementedUserCenterServer) GetAccessToken(context.Context, *GetAccessT
 }
 func (UnimplementedUserCenterServer) RegisterUser(context.Context, *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
+}
+func (UnimplementedUserCenterServer) Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
 }
 func (UnimplementedUserCenterServer) GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByID not implemented")
@@ -140,6 +156,24 @@ func _UserCenter_RegisterUser_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserCenter_Refresh_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefreshRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserCenterServer).Refresh(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/usercenter.UserCenter/Refresh",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserCenterServer).Refresh(ctx, req.(*RefreshRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserCenter_GetUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserByIDRequest)
 	if err := dec(in); err != nil {
@@ -172,6 +206,10 @@ var UserCenter_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterUser",
 			Handler:    _UserCenter_RegisterUser_Handler,
+		},
+		{
+			MethodName: "Refresh",
+			Handler:    _UserCenter_Refresh_Handler,
 		},
 		{
 			MethodName: "GetUserByID",

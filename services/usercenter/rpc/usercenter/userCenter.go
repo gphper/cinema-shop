@@ -17,6 +17,8 @@ type (
 	GetAccessTokenResponse = usercenter.GetAccessTokenResponse
 	GetUserByIDRequest     = usercenter.GetUserByIDRequest
 	GetUserByIdResponse    = usercenter.GetUserByIdResponse
+	RefreshRequest         = usercenter.RefreshRequest
+	RefreshResponse        = usercenter.RefreshResponse
 	RegisterRequest        = usercenter.RegisterRequest
 	RegisterResponse       = usercenter.RegisterResponse
 	UserInfo               = usercenter.UserInfo
@@ -26,6 +28,8 @@ type (
 		GetAccessToken(ctx context.Context, in *GetAccessTokenRequest, opts ...grpc.CallOption) (*GetAccessTokenResponse, error)
 		//  注册
 		RegisterUser(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+		//  刷新Token
+		Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 		//  根据ID获取信息
 		GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error)
 	}
@@ -51,6 +55,12 @@ func (m *defaultUserCenter) GetAccessToken(ctx context.Context, in *GetAccessTok
 func (m *defaultUserCenter) RegisterUser(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
 	client := usercenter.NewUserCenterClient(m.cli.Conn())
 	return client.RegisterUser(ctx, in, opts...)
+}
+
+//  刷新Token
+func (m *defaultUserCenter) Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error) {
+	client := usercenter.NewUserCenterClient(m.cli.Conn())
+	return client.Refresh(ctx, in, opts...)
 }
 
 //  根据ID获取信息

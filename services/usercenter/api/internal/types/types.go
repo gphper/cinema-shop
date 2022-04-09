@@ -27,3 +27,24 @@ type RegisterResp struct {
 	AccessExpire int64  `json:"accessExpire"`
 	RefreshToken string `json:"refreshAfter"`
 }
+
+type RefreshTokenReq struct {
+	RefToken string `json:"ref_token"`
+}
+
+type RefreshTokenResp struct {
+	Id           int64  `json:"id"`
+	Name         string `json:"name"`
+	AccessToken  string `json:"accessToken"`
+	AccessExpire int64  `json:"accessExpire"`
+	RefreshToken string `json:"refreshAfter"`
+}
+
+type GetUserInfoReq struct {
+	AccessToken string `json:"access_token"`
+}
+
+type GetUserInfoResp struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+}

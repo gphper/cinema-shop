@@ -18,4 +18,16 @@ service usercenter-api {
 	
 	@handler register
 	post /api/user/register (RegisterReq) returns (RegisterResp)
+	
+	@handler refresh
+	post /api/user/refresh (RefreshTokenReq) returns (RefreshTokenResp)
+	
+}
+
+@server(
+	jwt: Auth
+)
+service usercenter-api {
+	@handler get_user_info
+	post /api/user/get_user_info (GetUserInfoReq) returns (GetUserInfoResp)
 }

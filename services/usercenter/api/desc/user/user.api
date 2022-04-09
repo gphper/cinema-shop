@@ -37,3 +37,28 @@ type (
 		RefreshToken string  `json:"refreshAfter"`
 	}
 )
+
+type (
+	RefreshTokenReq{
+		RefToken string `json:"ref_token"`
+	}
+
+	RefreshTokenResp {
+		Id           int64  `json:"id"`
+		Name         string `json:"name"`
+		AccessToken  string `json:"accessToken"`
+		AccessExpire int64  `json:"accessExpire"`
+		RefreshToken string  `json:"refreshAfter"`
+	}
+)
+
+type (
+	GetUserInfoReq{
+		AccessToken string `json:"access_token"`
+	}
+
+	GetUserInfoResp{
+		Id           int64  `json:"id"`
+		Name         string `json:"name"`
+	}
+)

@@ -43,12 +43,27 @@ message RegisterResponse{
   string reftoken = 5;
 }
 
+message RefreshRequest{
+  string reftoken = 1;
+}
+
+message RefreshResponse{
+  int64 id = 1;
+  string name = 2;
+  int64 expire = 3;
+  string token = 4;
+  string reftoken = 5;
+}
+
 service UserCenter {
   // 登录验证
   rpc GetAccessToken(GetAccessTokenRequest) returns(GetAccessTokenResponse);
 
   // 注册
   rpc RegisterUser(RegisterRequest) returns(RegisterResponse);
+
+  // 刷新Token
+  rpc Refresh(RefreshRequest) returns(RefreshResponse);
 
   // 根据ID获取信息
   rpc GetUserByID(GetUserByIDRequest) returns(GetUserByIdResponse);
