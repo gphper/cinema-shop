@@ -25,7 +25,17 @@ func NewGetUserByIDLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 
 //  根据ID获取信息
 func (l *GetUserByIDLogic) GetUserByID(in *usercenter.GetUserByIDRequest) (*usercenter.GetUserByIdResponse, error) {
-	// todo: add your logic here and delete this line
 
-	return &usercenter.GetUserByIdResponse{}, nil
+	userInfo, err := l.svcCtx.UserModel.FindOne(l.ctx, in.Id)
+	if err != nil {
+		return &usercenter.GetUserByIdResponse{}, err
+	}
+
+	return &usercenter.GetUserByIdResponse{
+		Info: &usercenter.UserInfo{
+			Id:    userInfo.Id,
+			Name:  userInfo.Name,
+			Email: userInfo.Email,
+		},
+	}, nil
 }

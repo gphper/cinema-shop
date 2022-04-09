@@ -40,11 +40,8 @@ type RefreshTokenResp struct {
 	RefreshToken string `json:"refreshAfter"`
 }
 
-type GetUserInfoReq struct {
-	AccessToken string `json:"access_token"`
-}
-
 type GetUserInfoResp struct {
-	Id   int64  `json:"id"`
-	Name string `json:"name"`
+	Id    int64  `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }

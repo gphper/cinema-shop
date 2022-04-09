@@ -28,6 +28,6 @@ service usercenter-api {
 	jwt: Auth
 )
 service usercenter-api {
-	@handler get_user_info
-	post /api/user/get_user_info (GetUserInfoReq) returns (GetUserInfoResp)
+	@handler getUserInfo
+	get /api/user/get_user_info () returns (GetUserInfoResp)
 }

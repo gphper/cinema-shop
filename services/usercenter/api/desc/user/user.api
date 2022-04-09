@@ -53,12 +53,10 @@ type (
 )
 
 type (
-	GetUserInfoReq{
-		AccessToken string `json:"access_token"`
-	}
-
+	
 	GetUserInfoResp{
 		Id           int64  `json:"id"`
 		Name         string `json:"name"`
+		Email        string `json:"email"`
 	}
 )
