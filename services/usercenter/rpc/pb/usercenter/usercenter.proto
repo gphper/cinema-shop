@@ -36,9 +36,11 @@ message RegisterRequest{
 }
 
 message RegisterResponse{
-  int64 expire = 1;
-  string token = 2;
-  string reftoken = 3;
+  int64 id = 1;
+  string name = 2;
+  int64 expire = 3;
+  string token = 4;
+  string reftoken = 5;
 }
 
 service UserCenter {

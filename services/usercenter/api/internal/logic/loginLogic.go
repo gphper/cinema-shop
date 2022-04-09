@@ -38,8 +38,9 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	return &types.LoginResp{
 		Id:           userResp.Id,
 		Name:         userResp.Name,
-		AccessToken:  "",
-		AccessExpire: 10,
+		AccessToken:  userResp.Token,
+		AccessExpire: userResp.Expire,
+		RefreshToken: userResp.Reftoken,
 	}, nil
 
 }

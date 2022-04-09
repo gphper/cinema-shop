@@ -53,6 +53,8 @@ func (l *RegisterUserLogic) RegisterUser(in *usercenter.RegisterRequest) (*userc
 	}
 
 	return &usercenter.RegisterResponse{
+		Id:       user.Id,
+		Name:     user.Name,
 		Token:    jToken,
 		Expire:   l.svcCtx.Config.AuthConfig.AccessExpire,
 		Reftoken: user.Reftoken,

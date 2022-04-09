@@ -21,6 +21,8 @@ type RegisterReq struct {
 }
 
 type RegisterResp struct {
+	Id           int64  `json:"id"`
+	Name         string `json:"name"`
 	AccessToken  string `json:"accessToken"`
 	AccessExpire int64  `json:"accessExpire"`
 	RefreshToken string `json:"refreshAfter"`
