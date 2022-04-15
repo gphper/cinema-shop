@@ -20,9 +20,9 @@ endif
 
 ifeq ($(METHOD),gen)
 ifeq ($(TYPE),api)
-	goctl api go --api $(SERVERPATH)/api/desc/$(SERVERNAME).api --dir $(SERVERPATH)/api --style goZero
+	goctl api go --api $(SERVERPATH)/api/desc/$(SERVERNAME).api --home ./template  --dir $(SERVERPATH)/api --style goZero
 else
-	goctl rpc protoc $(SERVERPATH)/rpc/pb/$(SERVERNAME)/$(SERVERNAME).proto --go_out=$(SERVERPATH)/rpc/pb \
+	goctl rpc protoc $(SERVERPATH)/rpc/pb/$(SERVERNAME)/$(SERVERNAME).proto --home ./template --go_out=$(SERVERPATH)/rpc/pb \
  	 --go-grpc_out=$(SERVERPATH)/rpc/pb --zrpc_out=$(SERVERPATH)/rpc --style=goZero
 endif
 endif

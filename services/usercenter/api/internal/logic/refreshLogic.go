@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 
+	"cinema-shop/common/errorxx"
 	"cinema-shop/services/usercenter/api/internal/svc"
 	"cinema-shop/services/usercenter/api/internal/types"
 	"cinema-shop/services/usercenter/rpc/usercenter"
@@ -31,14 +32,16 @@ func (l *RefreshLogic) Refresh(req *types.RefreshTokenReq) (resp *types.RefreshT
 	})
 
 	if err != nil {
-		return
+		return nil, errorxx.NewCustomError(types.USER_REFRESH_ERR, "获取新Token失败")
 	}
 
 	return &types.RefreshTokenResp{
-		Id:           refRes.Id,
-		Name:         refRes.Name,
-		AccessToken:  refRes.Token,
-		AccessExpire: refRes.Expire,
-		RefreshToken: refRes.Reftoken,
+		Data: types.RefreshTokenData{
+			Id:           refRes.Id,
+			Name:         refRes.Name,
+			AccessToken:  refRes.Token,
+			AccessExpire: refRes.Expire,
+			RefreshToken: refRes.Reftoken,
+		},
 	}, nil
 }

@@ -13,12 +13,18 @@ type (
 		Password string `json:"password"`
 	}
 
-	LoginResp {
+	LoginData {
 		Id           int64  `json:"id"`
 		Name         string `json:"name"`
 		AccessToken  string `json:"accessToken"`
 		AccessExpire int64  `json:"accessExpire"`
 		RefreshToken string  `json:"refreshAfter"`
+	}
+
+	LoginResp {
+		Data LoginData `json:"data"`
+		ErrCode int `json:"err_code"`
+		ErrMsg string `json:"err_msg"`
 	}
 )
 
@@ -29,12 +35,18 @@ type (
 		Name string `json:"name"`
 	}
 
-	RegisterResp {
+	RegisterData {
 		Id           int64  `json:"id"`
 		Name         string `json:"name"`
 		AccessToken  string `json:"accessToken"`
 		AccessExpire int64  `json:"accessExpire"`
 		RefreshToken string  `json:"refreshAfter"`
+	}
+
+	RegisterResp{
+		Data RegisterData `json:"data"`
+		ErrCode int `json:"err_code"`
+		ErrMsg string `json:"err_msg"`
 	}
 )
 
@@ -43,20 +55,32 @@ type (
 		RefToken string `json:"ref_token"`
 	}
 
-	RefreshTokenResp {
+	RefreshTokenData {
 		Id           int64  `json:"id"`
 		Name         string `json:"name"`
 		AccessToken  string `json:"accessToken"`
 		AccessExpire int64  `json:"accessExpire"`
 		RefreshToken string  `json:"refreshAfter"`
 	}
+
+	RefreshTokenResp {
+		Data RefreshTokenData `json:"data"`
+		ErrCode int `json:"err_code"`
+		ErrMsg string `json:"err_msg"`
+	}
 )
 
 type (
 	
-	GetUserInfoResp{
+	GetUserInfoData{
 		Id           int64  `json:"id"`
 		Name         string `json:"name"`
 		Email        string `json:"email"`
+	}
+
+	GetUserInfoResp{
+		Data GetUserInfoData `json:"data"`
+		ErrCode int `json:"err_code"`
+		ErrMsg string `json:"err_msg"`
 	}
 )

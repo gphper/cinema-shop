@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"cinema-shop/common/errorxx"
 	"cinema-shop/services/usercenter/api/internal/svc"
 	"cinema-shop/services/usercenter/api/internal/types"
 	"cinema-shop/services/usercenter/rpc/usercenter"
@@ -36,14 +37,17 @@ func (l *GetUserInfoLogic) GetUserInfo() (resp *types.GetUserInfoResp, err error
 	userInfo, err := l.svcCtx.UserRpcClient.GetUserByID(l.ctx, &usercenter.GetUserByIDRequest{
 		Id: id,
 	})
+
 	if err != nil {
-		return
+		return nil, errorxx.NewCustomError(types.USER_INFO_ERR, "获取用户信息失败")
 	}
 
 	resp = &types.GetUserInfoResp{
-		Id:    userInfo.Info.Id,
-		Name:  userInfo.Info.Name,
-		Email: userInfo.Info.Email,
+		Data: types.GetUserInfoData{
+			Id:    userInfo.Info.Id,
+			Name:  userInfo.Info.Name,
+			Email: userInfo.Info.Email,
+		},
 	}
 
 	return

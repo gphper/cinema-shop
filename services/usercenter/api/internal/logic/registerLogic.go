@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 
+	"cinema-shop/common/errorxx"
 	"cinema-shop/services/usercenter/api/internal/svc"
 	"cinema-shop/services/usercenter/api/internal/types"
 	"cinema-shop/services/usercenter/rpc/usercenter"
@@ -33,14 +34,16 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	})
 
 	if err != nil {
-		return
+		return nil, errorxx.NewCustomError(types.USER_REGISTER_ERR, "注册用户失败")
 	}
 
 	return &types.RegisterResp{
-		Id:           registResp.Id,
-		Name:         registResp.Name,
-		AccessExpire: registResp.Expire,
-		AccessToken:  registResp.Token,
-		RefreshToken: registResp.Reftoken,
+		Data: types.RegisterData{
+			Id:           registResp.Id,
+			Name:         registResp.Name,
+			AccessExpire: registResp.Expire,
+			AccessToken:  registResp.Token,
+			RefreshToken: registResp.Reftoken,
+		},
 	}, nil
 }

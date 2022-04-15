@@ -6,12 +6,18 @@ type LoginReq struct {
 	Password string `json:"password"`
 }
 
-type LoginResp struct {
+type LoginData struct {
 	Id           int64  `json:"id"`
 	Name         string `json:"name"`
 	AccessToken  string `json:"accessToken"`
 	AccessExpire int64  `json:"accessExpire"`
 	RefreshToken string `json:"refreshAfter"`
+}
+
+type LoginResp struct {
+	Data    LoginData `json:"data"`
+	ErrCode int       `json:"err_code"`
+	ErrMsg  string    `json:"err_msg"`
 }
 
 type RegisterReq struct {
@@ -20,19 +26,25 @@ type RegisterReq struct {
 	Name     string `json:"name"`
 }
 
-type RegisterResp struct {
+type RegisterData struct {
 	Id           int64  `json:"id"`
 	Name         string `json:"name"`
 	AccessToken  string `json:"accessToken"`
 	AccessExpire int64  `json:"accessExpire"`
 	RefreshToken string `json:"refreshAfter"`
+}
+
+type RegisterResp struct {
+	Data    RegisterData `json:"data"`
+	ErrCode int          `json:"err_code"`
+	ErrMsg  string       `json:"err_msg"`
 }
 
 type RefreshTokenReq struct {
 	RefToken string `json:"ref_token"`
 }
 
-type RefreshTokenResp struct {
+type RefreshTokenData struct {
 	Id           int64  `json:"id"`
 	Name         string `json:"name"`
 	AccessToken  string `json:"accessToken"`
@@ -40,8 +52,20 @@ type RefreshTokenResp struct {
 	RefreshToken string `json:"refreshAfter"`
 }
 
-type GetUserInfoResp struct {
+type RefreshTokenResp struct {
+	Data    RefreshTokenData `json:"data"`
+	ErrCode int              `json:"err_code"`
+	ErrMsg  string           `json:"err_msg"`
+}
+
+type GetUserInfoData struct {
 	Id    int64  `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
+}
+
+type GetUserInfoResp struct {
+	Data    GetUserInfoData `json:"data"`
+	ErrCode int             `json:"err_code"`
+	ErrMsg  string          `json:"err_msg"`
 }

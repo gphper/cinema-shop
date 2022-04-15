@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 
+	"cinema-shop/common/errorxx"
 	"cinema-shop/services/usercenter/api/internal/svc"
 	"cinema-shop/services/usercenter/api/internal/types"
 	"cinema-shop/services/usercenter/rpc/pb/usercenter"
@@ -32,15 +33,18 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	})
 
 	if err != nil {
+		err = errorxx.NewCustomError(types.USER_ACCOUNT_ERR, "账号密码错误")
 		return
 	}
 
 	return &types.LoginResp{
-		Id:           userResp.Id,
-		Name:         userResp.Name,
-		AccessToken:  userResp.Token,
-		AccessExpire: userResp.Expire,
-		RefreshToken: userResp.Reftoken,
+		Data: types.LoginData{
+			Id:           userResp.Id,
+			Name:         userResp.Name,
+			AccessToken:  userResp.Token,
+			AccessExpire: userResp.Expire,
+			RefreshToken: userResp.Reftoken,
+		},
 	}, nil
 
 }
