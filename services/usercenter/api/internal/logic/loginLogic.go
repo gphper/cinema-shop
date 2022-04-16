@@ -33,7 +33,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	})
 
 	if err != nil {
-		err = errorxx.NewCustomError(types.USER_ACCOUNT_ERR, "账号密码错误")
+		err = errorxx.NewCodeError(types.USER_ACCOUNT_ERR, "账号密码错误")
 		return
 	}
 

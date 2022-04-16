@@ -39,7 +39,7 @@ func (l *GetUserInfoLogic) GetUserInfo() (resp *types.GetUserInfoResp, err error
 	})
 
 	if err != nil {
-		return nil, errorxx.NewCustomError(types.USER_INFO_ERR, "获取用户信息失败")
+		return nil, errorxx.NewCodeError(types.USER_INFO_ERR, "获取用户信息失败")
 	}
 
 	resp = &types.GetUserInfoResp{

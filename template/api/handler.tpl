@@ -2,8 +2,7 @@ package {{.PkgName}}
 
 import (
 	"net/http"
-	"reflect"
-	"cinema-shop/common/errorxx"
+
 	{{if .After1_1_10}}"github.com/zeromicro/go-zero/rest/httpx"{{end}}
 	{{.ImportPackages}}
 )
@@ -19,14 +18,7 @@ func {{.HandlerName}}(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		{{end}}l := {{.LogicName}}.New{{.LogicType}}(r.Context(), svcCtx)
 		{{if .HasResp}}resp, {{end}}err := l.{{.Call}}({{if .HasRequest}}&req{{end}})
 		if err != nil {
-
-			if reflect.TypeOf(err).Name() == "ApiCustomError" {
-				er := err.(errorxx.ApiCustomError)
-				httpx.OkJson(w, er)
-			} else {
-				httpx.Error(w, err)
-			}
-
+			httpx.Error(w, err)
 		} else {
 			{{if .HasResp}}httpx.OkJson(w, resp){{else}}httpx.Ok(w){{end}}
 		}

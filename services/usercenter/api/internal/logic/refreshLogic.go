@@ -32,7 +32,7 @@ func (l *RefreshLogic) Refresh(req *types.RefreshTokenReq) (resp *types.RefreshT
 	})
 
 	if err != nil {
-		return nil, errorxx.NewCustomError(types.USER_REFRESH_ERR, "获取新Token失败")
+		return nil, errorxx.NewCodeError(types.USER_REFRESH_ERR, "获取新Token失败")
 	}
 
 	return &types.RefreshTokenResp{

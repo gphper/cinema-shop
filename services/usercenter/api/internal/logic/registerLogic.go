@@ -34,7 +34,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	})
 
 	if err != nil {
-		return nil, errorxx.NewCustomError(types.USER_REGISTER_ERR, "注册用户失败")
+		return nil, errorxx.NewCodeError(types.USER_REGISTER_ERR, "注册用户失败")
 	}
 
 	return &types.RegisterResp{
