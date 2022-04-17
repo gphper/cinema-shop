@@ -34,3 +34,11 @@ make order-run-api
 ### 可能用到的
 
  `mysql`  `redis`  `etcd` `nsq`
+
+
+
+### 数据表设计
+
+![order](F:\cinema-shop\readme\order.PNG)
+
+![cinema](F:\cinema-shop\readme\cinema.PNG)
