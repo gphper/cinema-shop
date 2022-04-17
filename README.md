@@ -39,6 +39,6 @@ make order-run-api
 
 ### 数据表设计
 
-![order](readme\order.PNG)
+![order](readme/order.PNG)
 
-![cinema](readme\cinema.PNG)
+![cinema](readme/cinema.PNG)
