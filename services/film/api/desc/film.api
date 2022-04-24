@@ -1,25 +1,66 @@
-
 syntax = "v1"
 
 info (
-	title: // TODO: add title
-	desc: // TODO: add description
+	title: "FILM"
+	desc: "FILM SERVER"
 	author: "gphper"
 	email: "570165887@qq.com"
 )
 
-type request {
-	// TODO: add members here and delete this comment
-}
+type (
+	FilmListInfo {
+		FilmId   int    `json:"film_id"`
+		Type     int    `json:"type"`
+		FilmName string `json:"film_name"`
+		CoverPic string `json:"cover_pic"`
+	}
 
-type response {
-	// TODO: add members here and delete this comment
-}
+	FilmListInfoResp {
+		Data  []FilmListInfo `json:"data"`
+		Count int            `json:"count"`
+		Page  int            `json:"page"`
+	}
 
+	FilmListReq {
+		Page  int `path:"page"`
+		Limit int `path:"limit"`
+	}
+
+	FilmListResp {
+		Data    FilmListInfoResp `json:"data"`
+		ErrCode int              `json:"err_code"`
+		ErrMsg  string           `json:"err_msg"`
+	}
+)
+
+type (
+	FilmDetailInfo {
+		FilmId   int    `json:"film_id"`
+		Cate     int    `json:"cate"`
+		FilmName string `json:"film_name"`
+		CoverPic string `json:"cover_pic"`
+		FilmDesc string `json:"film_desc"`
+	}
+
+	FilmDetailReq {
+		FilmId int `path:"film_id"`
+	}
+
+	FilmDetailResp {
+		Data    FilmDetailInfo `json:"data"`
+		ErrCode int            `json:"err_code"`
+		ErrMsg  string         `json:"err_msg"`
+	}
+)
+
+@server(
+	prefix: api/film/v1
+	group: Film
+)
 service film-api {
-	@handler GetUser // TODO: set handler name and delete this comment
-	get /users/id/:userId(request) returns(response)
-
-	@handler CreateUser // TODO: set handler name and delete this comment
-	post /users/create(request)
+	@handler FilmList
+	get /list/:page/:limit(FilmListReq) returns(FilmListResp)
+	
+	@handler FilmDetail
+	get /detail/:film_id(FilmDetailReq) returns(FilmDetailResp)
 }
