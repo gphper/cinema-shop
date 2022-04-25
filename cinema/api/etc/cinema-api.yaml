@@ -1,8 +1,0 @@
-Name: film-api
-Host: 0.0.0.0
-Port: 8889
-FilmRpcConf:
-  Etcd:
-    Hosts:
-    - 127.0.0.1:2379
-    Key: film.rpc
