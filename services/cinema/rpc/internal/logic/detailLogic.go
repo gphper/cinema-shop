@@ -25,7 +25,19 @@ func NewDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DetailLogi
 
 // 影片详情
 func (l *DetailLogic) Detail(in *cinema.FilmDatailRequest) (*cinema.FilmDetailResponse, error) {
-	// todo: add your logic here and delete this line
 
-	return &cinema.FilmDetailResponse{}, nil
+	filmInfo, err := l.svcCtx.FilmModel.FindOne(l.ctx, int64(in.FilmId))
+	if err != nil {
+		return &cinema.FilmDetailResponse{}, err
+	}
+
+	return &cinema.FilmDetailResponse{
+		Data: &cinema.FilmDetailInfo{
+			FilmId:   int32(filmInfo.FilmId),
+			Cate:     int32(filmInfo.Cate),
+			FilmName: filmInfo.FilmName,
+			CoverPic: filmInfo.CoverPic,
+			FilmDesc: filmInfo.FilmDesc,
+		},
+	}, nil
 }
