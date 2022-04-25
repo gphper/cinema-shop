@@ -1,25 +1,24 @@
-
 syntax = "v1"
 
 info (
-	title: // TODO: add title
-	desc: // TODO: add description
+	title: "Cinema"
+	desc: "Cinema SERVER"
 	author: "gphper"
 	email: "570165887@qq.com"
 )
 
-type request {
-	// TODO: add members here and delete this comment
-}
+import (
+	"film/film.api"
+)
 
-type response {
-	// TODO: add members here and delete this comment
-}
-
-service cinema-api {
-	@handler GetUser // TODO: set handler name and delete this comment
-	get /users/id/:userId(request) returns(response)
-
-	@handler CreateUser // TODO: set handler name and delete this comment
-	post /users/create(request)
+@server(
+	prefix: api/film/v1
+	group: Film
+)
+service cinema{
+	@handler FilmList
+	get /list/:page/:limit(FilmListReq) returns(FilmListResp)
+	
+	@handler FilmDetail
+	get /detail/:film_id(FilmDetailReq) returns(FilmDetailResp)
 }
