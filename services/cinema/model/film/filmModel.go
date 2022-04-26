@@ -46,9 +46,14 @@ func (m *customFilmModel) PageLimit(ctx context.Context, where PageLimitWhere, c
 		sqlnum += " and type =" + strconv.Itoa(where.Cate)
 	}
 
+	if where.Status > 0 {
+		sql += " and status =" + strconv.Itoa(where.Status)
+		sqlnum += " and status =" + strconv.Itoa(where.Status)
+	}
+
 	sql += " limit ?,?"
 
-	key := fmt.Sprintf("film:data:%d%d%d%d", where.Cate, where.Type, where.Page, where.Limit)
+	key := fmt.Sprintf("film:data:%d%d%d%d%d", where.Status, where.Cate, where.Type, where.Page, where.Limit)
 	if err := m.QueryRowCtx(ctx, data, key, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		err := conn.QueryRowsCtx(ctx, data, sql, ((where.Page - 1) * where.Limit), where.Limit)
 		if err != nil {
@@ -59,7 +64,7 @@ func (m *customFilmModel) PageLimit(ctx context.Context, where PageLimitWhere, c
 		return err
 	}
 
-	keyCount := fmt.Sprintf("film:count:%d%d%d%d", where.Cate, where.Type, where.Page, where.Limit)
+	keyCount := fmt.Sprintf("film:count:%d%d%d%d%d", where.Status, where.Cate, where.Type, where.Page, where.Limit)
 	if err := m.QueryRowCtx(ctx, count, keyCount, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
 		err := conn.QueryRowCtx(ctx, count, sqlnum)
 		if err != nil {

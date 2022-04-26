@@ -15,8 +15,9 @@ type FilmListInfoResp struct {
 }
 
 type FilmListReq struct {
-	Page  int `path:"page"`
-	Limit int `path:"limit"`
+	Status int `path:"status"`
+	Page   int `path:"page"`
+	Limit  int `path:"limit"`
 }
 
 type FilmListResp struct {

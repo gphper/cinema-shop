@@ -33,8 +33,9 @@ func (l *ListLogic) List(in *cinema.FilmListRequest) (*cinema.FilmListResponse, 
 	)
 
 	where := filmm.PageLimitWhere{
-		Page:  int(in.Page),
-		Limit: int(in.Limit),
+		Page:   int(in.Page),
+		Limit:  int(in.Limit),
+		Status: int(in.Status),
 	}
 
 	err = l.svcCtx.FilmModel.PageLimit(l.ctx, where, &count, &data)

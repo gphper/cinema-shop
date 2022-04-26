@@ -15,7 +15,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
-				Path:    "/list/:page/:limit",
+				Path:    "/list/:status/:page/:limit",
 				Handler: Film.FilmListHandler(serverCtx),
 			},
 			{

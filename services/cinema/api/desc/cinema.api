@@ -17,7 +17,7 @@ import (
 )
 service cinema{
 	@handler FilmList
-	get /list/:page/:limit(FilmListReq) returns(FilmListResp)
+	get /list/:status/:page/:limit(FilmListReq) returns(FilmListResp)
 	
 	@handler FilmDetail
 	get /detail/:film_id(FilmDetailReq) returns(FilmDetailResp)

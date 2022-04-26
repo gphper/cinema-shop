@@ -8,6 +8,7 @@ message FilmListRequest {
   int32 cate = 2;
   int32 page = 3;
   int32 limit = 4;
+  int32 status = 5;
 }
 
 message FilmListInfo {

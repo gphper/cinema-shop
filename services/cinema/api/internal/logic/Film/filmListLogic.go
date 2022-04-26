@@ -27,8 +27,9 @@ func NewFilmListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FilmList
 
 func (l *FilmListLogic) FilmList(req *types.FilmListReq) (resp *types.FilmListResp, err error) {
 	filmListRpcResp, err := l.svcCtx.CinemaRpcClient.List(l.ctx, &cinema.FilmListRequest{
-		Page:  int32(req.Page),
-		Limit: int32(req.Limit),
+		Page:   int32(req.Page),
+		Limit:  int32(req.Limit),
+		Status: int32(req.Status),
 	})
 	if err != nil {
 		return resp, errorxx.NewCodeError(2001, err.Error())
