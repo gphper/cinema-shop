@@ -23,9 +23,13 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CinemaClient interface {
 	//影片列表
-	List(ctx context.Context, in *FilmListRequest, opts ...grpc.CallOption) (*FilmListResponse, error)
+	FilmList(ctx context.Context, in *FilmListRequest, opts ...grpc.CallOption) (*FilmListResponse, error)
 	//影片详情
-	Detail(ctx context.Context, in *FilmDatailRequest, opts ...grpc.CallOption) (*FilmDetailResponse, error)
+	FilmDetail(ctx context.Context, in *FilmDatailRequest, opts ...grpc.CallOption) (*FilmDetailResponse, error)
+	//根据地理位置获取影院信息
+	CinemaInfo(ctx context.Context, in *CinemaInfoRequest, opts ...grpc.CallOption) (*CinemaInfoResponse, error)
+	//根据影片和日期和影院ID获取排片信息
+	ScreenCinemaInfo(ctx context.Context, in *ScreenCinemaInfoRequest, opts ...grpc.CallOption) (*ScreenCinemaInfoResponse, error)
 }
 
 type cinemaClient struct {
@@ -36,18 +40,36 @@ func NewCinemaClient(cc grpc.ClientConnInterface) CinemaClient {
 	return &cinemaClient{cc}
 }
 
-func (c *cinemaClient) List(ctx context.Context, in *FilmListRequest, opts ...grpc.CallOption) (*FilmListResponse, error) {
+func (c *cinemaClient) FilmList(ctx context.Context, in *FilmListRequest, opts ...grpc.CallOption) (*FilmListResponse, error) {
 	out := new(FilmListResponse)
-	err := c.cc.Invoke(ctx, "/cinema.Cinema/List", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/cinema.Cinema/FilmList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *cinemaClient) Detail(ctx context.Context, in *FilmDatailRequest, opts ...grpc.CallOption) (*FilmDetailResponse, error) {
+func (c *cinemaClient) FilmDetail(ctx context.Context, in *FilmDatailRequest, opts ...grpc.CallOption) (*FilmDetailResponse, error) {
 	out := new(FilmDetailResponse)
-	err := c.cc.Invoke(ctx, "/cinema.Cinema/Detail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/cinema.Cinema/FilmDetail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cinemaClient) CinemaInfo(ctx context.Context, in *CinemaInfoRequest, opts ...grpc.CallOption) (*CinemaInfoResponse, error) {
+	out := new(CinemaInfoResponse)
+	err := c.cc.Invoke(ctx, "/cinema.Cinema/CinemaInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cinemaClient) ScreenCinemaInfo(ctx context.Context, in *ScreenCinemaInfoRequest, opts ...grpc.CallOption) (*ScreenCinemaInfoResponse, error) {
+	out := new(ScreenCinemaInfoResponse)
+	err := c.cc.Invoke(ctx, "/cinema.Cinema/ScreenCinemaInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -59,9 +81,13 @@ func (c *cinemaClient) Detail(ctx context.Context, in *FilmDatailRequest, opts .
 // for forward compatibility
 type CinemaServer interface {
 	//影片列表
-	List(context.Context, *FilmListRequest) (*FilmListResponse, error)
+	FilmList(context.Context, *FilmListRequest) (*FilmListResponse, error)
 	//影片详情
-	Detail(context.Context, *FilmDatailRequest) (*FilmDetailResponse, error)
+	FilmDetail(context.Context, *FilmDatailRequest) (*FilmDetailResponse, error)
+	//根据地理位置获取影院信息
+	CinemaInfo(context.Context, *CinemaInfoRequest) (*CinemaInfoResponse, error)
+	//根据影片和日期和影院ID获取排片信息
+	ScreenCinemaInfo(context.Context, *ScreenCinemaInfoRequest) (*ScreenCinemaInfoResponse, error)
 	mustEmbedUnimplementedCinemaServer()
 }
 
@@ -69,11 +95,17 @@ type CinemaServer interface {
 type UnimplementedCinemaServer struct {
 }
 
-func (UnimplementedCinemaServer) List(context.Context, *FilmListRequest) (*FilmListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
+func (UnimplementedCinemaServer) FilmList(context.Context, *FilmListRequest) (*FilmListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FilmList not implemented")
 }
-func (UnimplementedCinemaServer) Detail(context.Context, *FilmDatailRequest) (*FilmDetailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Detail not implemented")
+func (UnimplementedCinemaServer) FilmDetail(context.Context, *FilmDatailRequest) (*FilmDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FilmDetail not implemented")
+}
+func (UnimplementedCinemaServer) CinemaInfo(context.Context, *CinemaInfoRequest) (*CinemaInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CinemaInfo not implemented")
+}
+func (UnimplementedCinemaServer) ScreenCinemaInfo(context.Context, *ScreenCinemaInfoRequest) (*ScreenCinemaInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ScreenCinemaInfo not implemented")
 }
 func (UnimplementedCinemaServer) mustEmbedUnimplementedCinemaServer() {}
 
@@ -88,38 +120,74 @@ func RegisterCinemaServer(s grpc.ServiceRegistrar, srv CinemaServer) {
 	s.RegisterService(&Cinema_ServiceDesc, srv)
 }
 
-func _Cinema_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Cinema_FilmList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FilmListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CinemaServer).List(ctx, in)
+		return srv.(CinemaServer).FilmList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cinema.Cinema/List",
+		FullMethod: "/cinema.Cinema/FilmList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CinemaServer).List(ctx, req.(*FilmListRequest))
+		return srv.(CinemaServer).FilmList(ctx, req.(*FilmListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Cinema_Detail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Cinema_FilmDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FilmDatailRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CinemaServer).Detail(ctx, in)
+		return srv.(CinemaServer).FilmDetail(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cinema.Cinema/Detail",
+		FullMethod: "/cinema.Cinema/FilmDetail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CinemaServer).Detail(ctx, req.(*FilmDatailRequest))
+		return srv.(CinemaServer).FilmDetail(ctx, req.(*FilmDatailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Cinema_CinemaInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CinemaInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CinemaServer).CinemaInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cinema.Cinema/CinemaInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CinemaServer).CinemaInfo(ctx, req.(*CinemaInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Cinema_ScreenCinemaInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScreenCinemaInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CinemaServer).ScreenCinemaInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cinema.Cinema/ScreenCinemaInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CinemaServer).ScreenCinemaInfo(ctx, req.(*ScreenCinemaInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -132,12 +200,20 @@ var Cinema_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CinemaServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "List",
-			Handler:    _Cinema_List_Handler,
+			MethodName: "FilmList",
+			Handler:    _Cinema_FilmList_Handler,
 		},
 		{
-			MethodName: "Detail",
-			Handler:    _Cinema_Detail_Handler,
+			MethodName: "FilmDetail",
+			Handler:    _Cinema_FilmDetail_Handler,
+		},
+		{
+			MethodName: "CinemaInfo",
+			Handler:    _Cinema_CinemaInfo_Handler,
+		},
+		{
+			MethodName: "ScreenCinemaInfo",
+			Handler:    _Cinema_ScreenCinemaInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

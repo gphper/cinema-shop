@@ -23,13 +23,25 @@ func NewCinemaServer(svcCtx *svc.ServiceContext) *CinemaServer {
 }
 
 // 影片列表
-func (s *CinemaServer) List(ctx context.Context, in *cinema.FilmListRequest) (*cinema.FilmListResponse, error) {
-	l := logic.NewListLogic(ctx, s.svcCtx)
-	return l.List(in)
+func (s *CinemaServer) FilmList(ctx context.Context, in *cinema.FilmListRequest) (*cinema.FilmListResponse, error) {
+	l := logic.NewFilmListLogic(ctx, s.svcCtx)
+	return l.FilmList(in)
 }
 
 // 影片详情
-func (s *CinemaServer) Detail(ctx context.Context, in *cinema.FilmDatailRequest) (*cinema.FilmDetailResponse, error) {
-	l := logic.NewDetailLogic(ctx, s.svcCtx)
-	return l.Detail(in)
+func (s *CinemaServer) FilmDetail(ctx context.Context, in *cinema.FilmDatailRequest) (*cinema.FilmDetailResponse, error) {
+	l := logic.NewFilmDetailLogic(ctx, s.svcCtx)
+	return l.FilmDetail(in)
+}
+
+// 根据地理位置获取影院信息
+func (s *CinemaServer) CinemaInfo(ctx context.Context, in *cinema.CinemaInfoRequest) (*cinema.CinemaInfoResponse, error) {
+	l := logic.NewCinemaInfoLogic(ctx, s.svcCtx)
+	return l.CinemaInfo(in)
+}
+
+// 根据影片和日期和影院ID获取排片信息
+func (s *CinemaServer) ScreenCinemaInfo(ctx context.Context, in *cinema.ScreenCinemaInfoRequest) (*cinema.ScreenCinemaInfoResponse, error) {
+	l := logic.NewScreenCinemaInfoLogic(ctx, s.svcCtx)
+	return l.ScreenCinemaInfo(in)
 }

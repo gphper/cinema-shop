@@ -41,9 +41,48 @@ message FilmDetailResponse{
   FilmDetailInfo data = 1;
 }
 
+//根据地理位置获取影院信息
+message CinemaInfoRequest {
+  string city_code = 1;
+  string area_code = 2;
+}
+
+message CinemaInfo {
+  int32 cinema_id = 1;
+  string cinema_name = 2;
+  int32 place = 3;
+  int32 score = 4;
+  string tags = 5;
+}
+
+message CinemaInfoResponse {
+  repeated CinemaInfo data = 1;
+}
+
+//根据影片和日期和影院ID获取排片信息
+message ScreenCinemaInfoRequest {
+  int32 film_id = 1;
+  string t_date = 2;
+  repeated int32 cinema_ids = 3;
+}
+
+message ScreenCinemaInfo {
+  int32 cinema_id = 1;
+  int32 price = 2;
+  repeated string start_time = 3;
+}
+
+message ScreenCinemaInfoResponse{
+  repeated ScreenCinemaInfo data = 1;
+}
+
 service Cinema {
   //影片列表
-  rpc List(FilmListRequest) returns(FilmListResponse);
+  rpc FilmList(FilmListRequest) returns(FilmListResponse);
   //影片详情
-  rpc Detail(FilmDatailRequest) returns(FilmDetailResponse);
+  rpc FilmDetail(FilmDatailRequest) returns(FilmDetailResponse);
+  //根据地理位置获取影院信息
+  rpc CinemaInfo(CinemaInfoRequest) returns(CinemaInfoResponse);
+  //根据影片和日期和影院ID获取排片信息
+  rpc ScreenCinemaInfo(ScreenCinemaInfoRequest) returns(ScreenCinemaInfoResponse);
 }

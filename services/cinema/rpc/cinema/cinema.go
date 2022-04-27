@@ -13,18 +13,28 @@ import (
 )
 
 type (
-	FilmDatailRequest  = cinema.FilmDatailRequest
-	FilmDetailInfo     = cinema.FilmDetailInfo
-	FilmDetailResponse = cinema.FilmDetailResponse
-	FilmListInfo       = cinema.FilmListInfo
-	FilmListRequest    = cinema.FilmListRequest
-	FilmListResponse   = cinema.FilmListResponse
+	CinemaInfo               = cinema.CinemaInfo
+	CinemaInfoRequest        = cinema.CinemaInfoRequest
+	CinemaInfoResponse       = cinema.CinemaInfoResponse
+	FilmDatailRequest        = cinema.FilmDatailRequest
+	FilmDetailInfo           = cinema.FilmDetailInfo
+	FilmDetailResponse       = cinema.FilmDetailResponse
+	FilmListInfo             = cinema.FilmListInfo
+	FilmListRequest          = cinema.FilmListRequest
+	FilmListResponse         = cinema.FilmListResponse
+	ScreenCinemaInfo         = cinema.ScreenCinemaInfo
+	ScreenCinemaInfoRequest  = cinema.ScreenCinemaInfoRequest
+	ScreenCinemaInfoResponse = cinema.ScreenCinemaInfoResponse
 
 	Cinema interface {
 		// 影片列表
-		List(ctx context.Context, in *FilmListRequest, opts ...grpc.CallOption) (*FilmListResponse, error)
+		FilmList(ctx context.Context, in *FilmListRequest, opts ...grpc.CallOption) (*FilmListResponse, error)
 		// 影片详情
-		Detail(ctx context.Context, in *FilmDatailRequest, opts ...grpc.CallOption) (*FilmDetailResponse, error)
+		FilmDetail(ctx context.Context, in *FilmDatailRequest, opts ...grpc.CallOption) (*FilmDetailResponse, error)
+		// 根据地理位置获取影院信息
+		CinemaInfo(ctx context.Context, in *CinemaInfoRequest, opts ...grpc.CallOption) (*CinemaInfoResponse, error)
+		// 根据影片和日期和影院ID获取排片信息
+		ScreenCinemaInfo(ctx context.Context, in *ScreenCinemaInfoRequest, opts ...grpc.CallOption) (*ScreenCinemaInfoResponse, error)
 	}
 
 	defaultCinema struct {
@@ -39,13 +49,25 @@ func NewCinema(cli zrpc.Client) Cinema {
 }
 
 // 影片列表
-func (m *defaultCinema) List(ctx context.Context, in *FilmListRequest, opts ...grpc.CallOption) (*FilmListResponse, error) {
+func (m *defaultCinema) FilmList(ctx context.Context, in *FilmListRequest, opts ...grpc.CallOption) (*FilmListResponse, error) {
 	client := cinema.NewCinemaClient(m.cli.Conn())
-	return client.List(ctx, in, opts...)
+	return client.FilmList(ctx, in, opts...)
 }
 
 // 影片详情
-func (m *defaultCinema) Detail(ctx context.Context, in *FilmDatailRequest, opts ...grpc.CallOption) (*FilmDetailResponse, error) {
+func (m *defaultCinema) FilmDetail(ctx context.Context, in *FilmDatailRequest, opts ...grpc.CallOption) (*FilmDetailResponse, error) {
 	client := cinema.NewCinemaClient(m.cli.Conn())
-	return client.Detail(ctx, in, opts...)
+	return client.FilmDetail(ctx, in, opts...)
+}
+
+// 根据地理位置获取影院信息
+func (m *defaultCinema) CinemaInfo(ctx context.Context, in *CinemaInfoRequest, opts ...grpc.CallOption) (*CinemaInfoResponse, error) {
+	client := cinema.NewCinemaClient(m.cli.Conn())
+	return client.CinemaInfo(ctx, in, opts...)
+}
+
+// 根据影片和日期和影院ID获取排片信息
+func (m *defaultCinema) ScreenCinemaInfo(ctx context.Context, in *ScreenCinemaInfoRequest, opts ...grpc.CallOption) (*ScreenCinemaInfoResponse, error) {
+	client := cinema.NewCinemaClient(m.cli.Conn())
+	return client.ScreenCinemaInfo(ctx, in, opts...)
 }

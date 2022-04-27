@@ -26,7 +26,7 @@ func NewFilmDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FilmDe
 
 func (l *FilmDetailLogic) FilmDetail(req *types.FilmDetailReq) (resp *types.FilmDetailResp, err error) {
 
-	rpcResp, err := l.svcCtx.CinemaRpcClient.Detail(l.ctx, &cinema.FilmDatailRequest{
+	rpcResp, err := l.svcCtx.CinemaRpcClient.FilmDetail(l.ctx, &cinema.FilmDatailRequest{
 		FilmId: int32(req.FilmId),
 	})
 	if err != nil {
