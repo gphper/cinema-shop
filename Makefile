@@ -8,6 +8,7 @@ ROOTPATH= ./services/
 SERVERNAME = $(word 1,$(subst -, ,${MAKECMDGOALS}))
 METHOD = $(word 2,$(subst -, ,${MAKECMDGOALS}))
 TYPE = $(word 3,$(subst -, ,${MAKECMDGOALS}))
+TABLE = $(word 4,$(subst -, ,${MAKECMDGOALS}))
 SERVERPATH = $(ROOTPATH)$(SERVERNAME)
 %:
 ifeq ($(METHOD),run)
@@ -21,9 +22,13 @@ endif
 ifeq ($(METHOD),gen)
 ifeq ($(TYPE),api)
 	goctl api go --api $(SERVERPATH)/api/desc/$(SERVERNAME).api --home ./template  --dir $(SERVERPATH)/api --style goZero
-else
+endif
+ifeq ($(TYPE),rpc)
 	goctl rpc protoc $(SERVERPATH)/rpc/pb/$(SERVERNAME)/$(SERVERNAME).proto --home ./template --go_out=$(SERVERPATH)/rpc/pb \
  	 --go-grpc_out=$(SERVERPATH)/rpc/pb --zrpc_out=$(SERVERPATH)/rpc --style=goZero
+endif
+ifeq ($(TYPE),model)
+	goctl model mysql ddl --home ./template --src  $(SERVERPATH)/model/zsql/$(TABLE).sql --dir $(SERVERPATH)/model/$(TABLE) -c --style goZero
 endif
 endif
 
