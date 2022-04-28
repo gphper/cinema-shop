@@ -50,7 +50,7 @@ message CinemaInfoRequest {
 message CinemaInfo {
   int32 cinema_id = 1;
   string cinema_name = 2;
-  int32 place = 3;
+  string place = 3;
   int32 score = 4;
   string tags = 5;
 }

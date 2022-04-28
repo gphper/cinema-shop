@@ -2,9 +2,8 @@ package film
 
 import (
 	"context"
-	"fmt"
-	"strconv"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -16,7 +15,12 @@ type (
 	// and implement the added methods in customFilmModel.
 	FilmModel interface {
 		filmModel
-		PageLimit(ctx context.Context, where PageLimitWhere, count *int, data *PageLimitData) error
+		Trans(ctx context.Context, fn func(context context.Context, session sqlx.Session) error) error
+		RowBuilder() squirrel.SelectBuilder
+		CountBuilder(field string) squirrel.SelectBuilder
+		SumBuilder(field string) squirrel.SelectBuilder
+		FindPageListByPage(ctx context.Context, rowBuilder squirrel.SelectBuilder, page, limit int64, orderBy string) ([]*Film, error)
+		FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error)
 	}
 
 	customFilmModel struct {
@@ -31,49 +35,73 @@ func NewFilmModel(conn sqlx.SqlConn, c cache.CacheConf) FilmModel {
 	}
 }
 
-// 分页获取数据
-func (m *customFilmModel) PageLimit(ctx context.Context, where PageLimitWhere, count *int, data *PageLimitData) error {
+// 分页获取影片信息
+func (m *defaultFilmModel) FindPageListByPage(ctx context.Context, rowBuilder squirrel.SelectBuilder, page, limit int64, orderBy string) ([]*Film, error) {
 
-	sql := "select * from " + m.table + " where film_id > 0"
-	sqlnum := "select count(`film_id`) from " + m.table + " where film_id > 0"
-	if where.Cate > 0 {
-		sql += " and cate =" + strconv.Itoa(where.Cate)
-		sqlnum += " and cate =" + strconv.Itoa(where.Cate)
+	if orderBy == "" {
+		rowBuilder = rowBuilder.OrderBy("film_id ASC")
+	} else {
+		rowBuilder = rowBuilder.OrderBy(orderBy)
 	}
 
-	if where.Type > 0 {
-		sql += " and type =" + strconv.Itoa(where.Cate)
-		sqlnum += " and type =" + strconv.Itoa(where.Cate)
+	if page < 1 {
+		page = 1
+	}
+	offset := (page - 1) * limit
+
+	query, values, err := rowBuilder.Offset(uint64(offset)).Limit(uint64(limit)).ToSql()
+	if err != nil {
+		return nil, err
 	}
 
-	if where.Status > 0 {
-		sql += " and status =" + strconv.Itoa(where.Status)
-		sqlnum += " and status =" + strconv.Itoa(where.Status)
+	var resp []*Film
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultFilmModel) FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error) {
+
+	query, values, err := countBuilder.ToSql()
+	if err != nil {
+		return 0, err
 	}
 
-	sql += " limit ?,?"
-
-	key := fmt.Sprintf("film:data:%d%d%d%d%d", where.Status, where.Cate, where.Type, where.Page, where.Limit)
-	if err := m.QueryRowCtx(ctx, data, key, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		err := conn.QueryRowsCtx(ctx, data, sql, ((where.Page - 1) * where.Limit), where.Limit)
-		if err != nil {
-			return err
-		}
-		return nil
-	}); err != nil {
-		return err
+	var resp int64
+	err = m.QueryRowNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return 0, err
 	}
+}
 
-	keyCount := fmt.Sprintf("film:count:%d%d%d%d%d", where.Status, where.Cate, where.Type, where.Page, where.Limit)
-	if err := m.QueryRowCtx(ctx, count, keyCount, func(ctx context.Context, conn sqlx.SqlConn, v interface{}) error {
-		err := conn.QueryRowCtx(ctx, count, sqlnum)
-		if err != nil {
-			return err
-		}
-		return nil
-	}); err != nil {
-		return err
-	}
+// export logic
+func (m *defaultFilmModel) Trans(ctx context.Context, fn func(ctx context.Context, session sqlx.Session) error) error {
 
-	return nil
+	return m.TransactCtx(ctx, func(ctx context.Context, session sqlx.Session) error {
+		return fn(ctx, session)
+	})
+
+}
+
+// export logic
+func (m *defaultFilmModel) RowBuilder() squirrel.SelectBuilder {
+	return squirrel.Select(filmRows).From(m.table)
+}
+
+// export logic
+func (m *defaultFilmModel) CountBuilder(field string) squirrel.SelectBuilder {
+	return squirrel.Select("COUNT(" + field + ")").From(m.table)
+}
+
+// export logic
+func (m *defaultFilmModel) SumBuilder(field string) squirrel.SelectBuilder {
+	return squirrel.Select("IFNULL(SUM(" + field + "),0)").From(m.table)
 }

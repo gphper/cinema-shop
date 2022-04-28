@@ -45,6 +45,7 @@ type (
 		CoverPic string `db:"cover_pic"` // 影片封面图
 		Tp       int64  `db:"type"`      // 影片类型 1:2d 2:3d
 		Cate     int64  `db:"cate"`      // 影片分类 1古装剧 2动作片 2历史剧
+		Status   int64  `db:"status"`    // 状态 1即将上映 2上映中 3已下架
 	}
 )
 
@@ -58,8 +59,8 @@ func newFilmModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultFilmModel {
 func (m *defaultFilmModel) Insert(ctx context.Context, data *Film) (sql.Result, error) {
 	filmFilmIdKey := fmt.Sprintf("%s%v", cacheFilmFilmIdPrefix, data.FilmId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, filmRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.FilmName, data.FilmDesc, data.Duration, data.CoverPic, data.Tp, data.Cate)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, filmRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.FilmName, data.FilmDesc, data.Duration, data.CoverPic, data.Tp, data.Cate, data.Status)
 	}, filmFilmIdKey)
 	return ret, err
 }
@@ -85,7 +86,7 @@ func (m *defaultFilmModel) Update(ctx context.Context, data *Film) error {
 	filmFilmIdKey := fmt.Sprintf("%s%v", cacheFilmFilmIdPrefix, data.FilmId)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `film_id` = ?", m.table, filmRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.FilmName, data.FilmDesc, data.Duration, data.CoverPic, data.Tp, data.Cate, data.FilmId)
+		return conn.ExecCtx(ctx, query, data.FilmName, data.FilmDesc, data.Duration, data.CoverPic, data.Tp, data.Cate, data.Status, data.FilmId)
 	}, filmFilmIdKey)
 	return err
 }
