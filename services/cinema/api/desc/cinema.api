@@ -9,6 +9,7 @@ info (
 
 import (
 	"film/film.api"
+	"screen/screen.api"
 )
 
 @server(
@@ -21,4 +22,13 @@ service cinema{
 	
 	@handler FilmDetail
 	get /detail/:film_id(FilmDetailReq) returns(FilmDetailResp)
+}
+
+@server(
+	prefix: api/screen/v1
+	group: Screen
+)
+service cinema{
+	@handler ScreenCinemaInfo
+	post /screen_cinema_info(ScreenCinemaInfoReq) returns(ScreenCinemaInfoResp)
 }

@@ -1,0 +1,32 @@
+syntax = "v1"
+
+info (
+	title: "Screen"
+	desc: "Screen Api"
+	author: "gphper"
+	email: "570165887@qq.com"
+)
+
+type (
+	ScreenCinemaInfoReq {
+        TDate string `json:"t_date"`
+        FilmId int  `json:"film_id"`
+        CityCode string `json:"city_code"`
+        AreaCode string  `json:"area_code"`
+    }
+
+    ScreenCinemaInfo {
+        CinemaName string `json:"cinema_name"`
+        Place string `json:"place"`
+        Score int `json:"score"`
+        Film string `json:"film"`
+        Tags string `json:"tags"`
+        Price int `json:"price"`
+    }
+
+    ScreenCinemaInfoResp {
+        Data []ScreenCinemaInfo `json:"data"`
+        ErrCode int              `json:"err_code"`
+		ErrMsg  string           `json:"err_msg"`
+    }
+)

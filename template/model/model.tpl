@@ -22,6 +22,7 @@ type (
 		CountBuilder(field string) squirrel.SelectBuilder
 		SumBuilder(field string) squirrel.SelectBuilder
 		FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error)
+		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*{{.upperStartCamelObject}}, error)
 	}
 
 	custom{{.upperStartCamelObject}}Model struct {
@@ -54,6 +55,28 @@ func (m *default{{.upperStartCamelObject}}Model) FindCount(ctx context.Context, 
 	}
 }
 
+func (m *default{{.upperStartCamelObject}}Model) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*{{.upperStartCamelObject}}, error) {
+
+	if orderBy == "" {
+		rowBuilder = rowBuilder.OrderBy("id DESC")
+	} else {
+		rowBuilder = rowBuilder.OrderBy(orderBy)
+	}
+
+	query, values, err := rowBuilder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*{{.upperStartCamelObject}}
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
+}
 
 // export logic
 func (m *default{{.upperStartCamelObject}}Model) Trans(ctx context.Context, fn func(ctx context.Context, session sqlx.Session) error) error {
