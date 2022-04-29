@@ -19,6 +19,9 @@ make order-gen-api
 
 运行代码
 make order-run-api
+
+生成model文件[example:生成order服务中的order表model]
+make order-gen-model-order
 ```
 
 ### 功能模块：
