@@ -21,6 +21,7 @@ type (
 		SumBuilder(field string) squirrel.SelectBuilder
 		FindPageListByPage(ctx context.Context, rowBuilder squirrel.SelectBuilder, page, limit int64, orderBy string) ([]*Film, error)
 		FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error)
+		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Film, error)
 	}
 
 	customFilmModel struct {
@@ -79,6 +80,29 @@ func (m *defaultFilmModel) FindCount(ctx context.Context, countBuilder squirrel.
 		return resp, nil
 	default:
 		return 0, err
+	}
+}
+
+func (m *defaultFilmModel) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Film, error) {
+
+	if orderBy == "" {
+		rowBuilder = rowBuilder.OrderBy("film_id DESC")
+	} else {
+		rowBuilder = rowBuilder.OrderBy(orderBy)
+	}
+
+	query, values, err := rowBuilder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*Film
+	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
 	}
 }
 

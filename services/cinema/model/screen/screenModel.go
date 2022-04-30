@@ -64,7 +64,7 @@ func (m *defaultScreenModel) FindCount(ctx context.Context, countBuilder squirre
 func (m *defaultScreenModel) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Screen, error) {
 
 	if orderBy == "" {
-		rowBuilder = rowBuilder.OrderBy("id DESC")
+		rowBuilder = rowBuilder.OrderBy("screen_id DESC")
 	} else {
 		rowBuilder = rowBuilder.OrderBy(orderBy)
 	}
