@@ -2,7 +2,6 @@ package Cinema
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"cinema-shop/common/errorxx"
@@ -39,8 +38,6 @@ func (l *CinemaDetailLogic) CinemaDetail(req *types.CinemaDetailReq) (resp *type
 		return &types.CinemaDatailResp{}, errorxx.NewCodeError(2001, err.Error())
 	}
 
-	fmt.Printf("%+v \n", cinemaDetailResp)
-
 	filmIdResp, err := l.svcCtx.CinemaRpcClient.ScreenFilmId(l.ctx, &cinema.ScreenFilmIdRequest{
 		TDate:    time.Now().Format("2006-01-02"),
 		CinemaId: req.CinemaId,
@@ -49,9 +46,6 @@ func (l *CinemaDetailLogic) CinemaDetail(req *types.CinemaDetailReq) (resp *type
 		return &types.CinemaDatailResp{}, errorxx.NewCodeError(2001, err.Error())
 	}
 
-	fmt.Println("***************")
-	fmt.Printf("%+v", filmIdResp.FilmId)
-
 	filmInfoResp, err := l.svcCtx.CinemaRpcClient.FilmAll(l.ctx, &cinema.FilmAllRequest{
 		FilmId: filmIdResp.FilmId,
 	})
@@ -59,18 +53,10 @@ func (l *CinemaDetailLogic) CinemaDetail(req *types.CinemaDetailReq) (resp *type
 		return &types.CinemaDatailResp{}, errorxx.NewCodeError(2001, err.Error())
 	}
 
-	fmt.Println("***************")
-	fmt.Printf("%+v \n", filmInfoResp.Data)
-
 	copier.Copy(&resp.Data, &cinemaDetailResp)
-
 	filmInfos := make([]types.FilmInfo, 0)
 	copier.Copy(&filmInfos, &filmInfoResp.Data)
-
 	resp.Data.FilmInfos = filmInfos
-
-	fmt.Println("***************")
-	fmt.Printf("%+v \n", filmInfos)
 
 	return
 }
