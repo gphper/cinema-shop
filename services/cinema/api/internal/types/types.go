@@ -65,3 +65,32 @@ type ScreenCinemaInfoResp struct {
 	ErrCode int                `json:"err_code"`
 	ErrMsg  string             `json:"err_msg"`
 }
+
+type CinemaDetailReq struct {
+	CinemaId int64 `json:"cinema_id"`
+}
+
+type FilmInfo struct {
+	FilmId   int64  `json:"film_id"`
+	FilmName string `json:"film_name"`
+	Duration int64  `json:"duration"`
+	CoverPic string `json:"cover_pic"`
+	Cate     int64  `json:"cate"`
+}
+
+type CinemaDetailInfo struct {
+	CinemaName string     `json:"cinema_name"`
+	CinemaId   int64      `json:"cinema_id"`
+	Place      string     `json:"place"`
+	City       string     `json:"city"`
+	Area       string     `json:"area"`
+	Score      int64      `json:"score"`
+	Tags       string     `json:"tags"`
+	FilmInfos  []FilmInfo `json:"film_infos"`
+}
+
+type CinemaDatailResp struct {
+	Data    CinemaDetailInfo `json:"data"`
+	ErrCode int              `json:"err_code"`
+	ErrMsg  string           `json:"err_msg"`
+}

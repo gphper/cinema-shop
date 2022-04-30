@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	Cinema "cinema-shop/services/cinema/api/internal/handler/Cinema"
 	Film "cinema-shop/services/cinema/api/internal/handler/Film"
 	Screen "cinema-shop/services/cinema/api/internal/handler/Screen"
 	"cinema-shop/services/cinema/api/internal/svc"
@@ -37,5 +38,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/api/screen/v1"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/cinema_detail",
+				Handler: Cinema.CinemaDetailHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/cinema/v1"),
 	)
 }
