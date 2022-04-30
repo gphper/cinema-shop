@@ -13,7 +13,7 @@ SERVERPATH = $(ROOTPATH)$(SERVERNAME)
 %:
 ifeq ($(METHOD),run)
 ifeq ($(TYPE),api)
-	go run $(SERVERPATH)/api/$(SERVERNAME).go -f $(SERVERPATH)/api/etc/$(SERVERNAME)-api.yaml
+	go run $(SERVERPATH)/api/$(SERVERNAME).go -f $(SERVERPATH)/api/etc/$(SERVERNAME).yaml
 else
 	go run $(SERVERPATH)/rpc/$(SERVERNAME).go -f $(SERVERPATH)/rpc/etc/$(SERVERNAME).yaml
 endif

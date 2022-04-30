@@ -46,6 +46,7 @@ type (
 		StartTime   sql.NullString `db:"start_time"`   // 开场时间
 		HallId      sql.NullInt64  `db:"hall_id"`      // 影厅id
 		CurrentSeat sql.NullString `db:"current_seat"` // 当前座位售卖情况【0表示不存在 1待出售 2已出售】
+		SeatNum     sql.NullInt64  `db:"seat_num"`     // 场次总票量
 	}
 )
 
@@ -59,8 +60,8 @@ func newScreenModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultScreenModel {
 func (m *defaultScreenModel) Insert(ctx context.Context, data *Screen) (sql.Result, error) {
 	screenScreenIdKey := fmt.Sprintf("%s%v", cacheScreenScreenIdPrefix, data.ScreenId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, screenRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.CinemaId, data.FilmId, data.TDate, data.Price, data.StartTime, data.HallId, data.CurrentSeat)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, screenRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.CinemaId, data.FilmId, data.TDate, data.Price, data.StartTime, data.HallId, data.CurrentSeat, data.SeatNum)
 	}, screenScreenIdKey)
 	return ret, err
 }
@@ -86,7 +87,7 @@ func (m *defaultScreenModel) Update(ctx context.Context, data *Screen) error {
 	screenScreenIdKey := fmt.Sprintf("%s%v", cacheScreenScreenIdPrefix, data.ScreenId)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `screen_id` = ?", m.table, screenRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, data.CinemaId, data.FilmId, data.TDate, data.Price, data.StartTime, data.HallId, data.CurrentSeat, data.ScreenId)
+		return conn.ExecCtx(ctx, query, data.CinemaId, data.FilmId, data.TDate, data.Price, data.StartTime, data.HallId, data.CurrentSeat, data.SeatNum, data.ScreenId)
 	}, screenScreenIdKey)
 	return err
 }

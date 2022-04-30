@@ -7,6 +7,7 @@ CREATE TABLE screen(
     start_time TIME    COMMENT '开场时间' ,
     hall_id INT(32) UNSIGNED    COMMENT '影厅id' ,
     current_seat TEXT    COMMENT '当前座位售卖情况【0表示不存在 1待出售 2已出售】' ,
+    seat_num INT(32) UNSIGNED    COMMENT '场次总票量' ,
     PRIMARY KEY (screen_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT = '排片';
 CREATE INDEX union_index_tdate_filmid_cinemaid ON screen(t_date,film_id,cinema_id);

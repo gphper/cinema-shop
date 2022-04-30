@@ -1,3 +1,8 @@
 Name: cinema
 Host: 0.0.0.0
-Port: 8888
+Port: 8889
+CinemaRpcConf:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: cinema.rpc
