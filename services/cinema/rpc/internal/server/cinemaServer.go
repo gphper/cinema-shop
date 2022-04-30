@@ -45,3 +45,21 @@ func (s *CinemaServer) ScreenCinemaInfo(ctx context.Context, in *cinema.ScreenCi
 	l := logic.NewScreenCinemaInfoLogic(ctx, s.svcCtx)
 	return l.ScreenCinemaInfo(in)
 }
+
+// 根据影院ID获取详情
+func (s *CinemaServer) CinemaDetail(ctx context.Context, in *cinema.CinemaDetailRequest) (*cinema.CinemaDetailResp, error) {
+	l := logic.NewCinemaDetailLogic(ctx, s.svcCtx)
+	return l.CinemaDetail(in)
+}
+
+// 根据日期、影院ID获取排片电影
+func (s *CinemaServer) ScreenFilmId(ctx context.Context, in *cinema.ScreenFilmIdRequest) (*cinema.ScreenFilmIdResponse, error) {
+	l := logic.NewScreenFilmIdLogic(ctx, s.svcCtx)
+	return l.ScreenFilmId(in)
+}
+
+// 根据影片ID获取全部影片信息
+func (s *CinemaServer) FilmAll(ctx context.Context, in *cinema.FilmAllRequest) (*cinema.FilmAllResponse, error) {
+	l := logic.NewFilmAllLogic(ctx, s.svcCtx)
+	return l.FilmAll(in)
+}

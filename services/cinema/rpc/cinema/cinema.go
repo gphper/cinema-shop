@@ -13,18 +13,25 @@ import (
 )
 
 type (
+	CinemaDetailRequest      = cinema.CinemaDetailRequest
+	CinemaDetailResp         = cinema.CinemaDetailResp
 	CinemaInfo               = cinema.CinemaInfo
 	CinemaInfoRequest        = cinema.CinemaInfoRequest
 	CinemaInfoResponse       = cinema.CinemaInfoResponse
+	FilmAllRequest           = cinema.FilmAllRequest
+	FilmAllResponse          = cinema.FilmAllResponse
 	FilmDatailRequest        = cinema.FilmDatailRequest
 	FilmDetailInfo           = cinema.FilmDetailInfo
 	FilmDetailResponse       = cinema.FilmDetailResponse
+	FilmInfo                 = cinema.FilmInfo
 	FilmListInfo             = cinema.FilmListInfo
 	FilmListRequest          = cinema.FilmListRequest
 	FilmListResponse         = cinema.FilmListResponse
 	ScreenCinemaInfo         = cinema.ScreenCinemaInfo
 	ScreenCinemaInfoRequest  = cinema.ScreenCinemaInfoRequest
 	ScreenCinemaInfoResponse = cinema.ScreenCinemaInfoResponse
+	ScreenFilmIdRequest      = cinema.ScreenFilmIdRequest
+	ScreenFilmIdResponse     = cinema.ScreenFilmIdResponse
 
 	Cinema interface {
 		// 影片列表
@@ -35,6 +42,12 @@ type (
 		CinemaInfo(ctx context.Context, in *CinemaInfoRequest, opts ...grpc.CallOption) (*CinemaInfoResponse, error)
 		// 根据影片和日期和影院ID获取排片信息
 		ScreenCinemaInfo(ctx context.Context, in *ScreenCinemaInfoRequest, opts ...grpc.CallOption) (*ScreenCinemaInfoResponse, error)
+		// 根据影院ID获取详情
+		CinemaDetail(ctx context.Context, in *CinemaDetailRequest, opts ...grpc.CallOption) (*CinemaDetailResp, error)
+		// 根据日期、影院ID获取排片电影
+		ScreenFilmId(ctx context.Context, in *ScreenFilmIdRequest, opts ...grpc.CallOption) (*ScreenFilmIdResponse, error)
+		// 根据影片ID获取全部影片信息
+		FilmAll(ctx context.Context, in *FilmAllRequest, opts ...grpc.CallOption) (*FilmAllResponse, error)
 	}
 
 	defaultCinema struct {
@@ -70,4 +83,22 @@ func (m *defaultCinema) CinemaInfo(ctx context.Context, in *CinemaInfoRequest, o
 func (m *defaultCinema) ScreenCinemaInfo(ctx context.Context, in *ScreenCinemaInfoRequest, opts ...grpc.CallOption) (*ScreenCinemaInfoResponse, error) {
 	client := cinema.NewCinemaClient(m.cli.Conn())
 	return client.ScreenCinemaInfo(ctx, in, opts...)
+}
+
+// 根据影院ID获取详情
+func (m *defaultCinema) CinemaDetail(ctx context.Context, in *CinemaDetailRequest, opts ...grpc.CallOption) (*CinemaDetailResp, error) {
+	client := cinema.NewCinemaClient(m.cli.Conn())
+	return client.CinemaDetail(ctx, in, opts...)
+}
+
+// 根据日期、影院ID获取排片电影
+func (m *defaultCinema) ScreenFilmId(ctx context.Context, in *ScreenFilmIdRequest, opts ...grpc.CallOption) (*ScreenFilmIdResponse, error) {
+	client := cinema.NewCinemaClient(m.cli.Conn())
+	return client.ScreenFilmId(ctx, in, opts...)
+}
+
+// 根据影片ID获取全部影片信息
+func (m *defaultCinema) FilmAll(ctx context.Context, in *FilmAllRequest, opts ...grpc.CallOption) (*FilmAllResponse, error) {
+	client := cinema.NewCinemaClient(m.cli.Conn())
+	return client.FilmAll(ctx, in, opts...)
 }
