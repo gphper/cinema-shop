@@ -32,6 +32,9 @@ service cinema{
 service cinema{
 	@handler ScreenCinemaInfo
 	post /screen_cinema_info(ScreenCinemaInfoReq) returns(ScreenCinemaInfoResp)
+	
+	@handler ScreenList
+	post /screen_list(ScreenListReq) returns(ScreenListResp)
 }
 
 @server(

@@ -36,6 +36,10 @@ type CinemaClient interface {
 	ScreenFilmId(ctx context.Context, in *ScreenFilmIdRequest, opts ...grpc.CallOption) (*ScreenFilmIdResponse, error)
 	//根据影片ID获取全部影片信息
 	FilmAll(ctx context.Context, in *FilmAllRequest, opts ...grpc.CallOption) (*FilmAllResponse, error)
+	//根据影院ID获取影厅列表
+	HallList(ctx context.Context, in *HallListRequest, opts ...grpc.CallOption) (*HallListResponse, error)
+	//根据日期、影院ID、影片ID获取排片场次
+	ScreenList(ctx context.Context, in *ScreenListRequest, opts ...grpc.CallOption) (*ScreenListResponse, error)
 }
 
 type cinemaClient struct {
@@ -109,6 +113,24 @@ func (c *cinemaClient) FilmAll(ctx context.Context, in *FilmAllRequest, opts ...
 	return out, nil
 }
 
+func (c *cinemaClient) HallList(ctx context.Context, in *HallListRequest, opts ...grpc.CallOption) (*HallListResponse, error) {
+	out := new(HallListResponse)
+	err := c.cc.Invoke(ctx, "/cinema.Cinema/HallList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cinemaClient) ScreenList(ctx context.Context, in *ScreenListRequest, opts ...grpc.CallOption) (*ScreenListResponse, error) {
+	out := new(ScreenListResponse)
+	err := c.cc.Invoke(ctx, "/cinema.Cinema/ScreenList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CinemaServer is the server API for Cinema service.
 // All implementations must embed UnimplementedCinemaServer
 // for forward compatibility
@@ -127,6 +149,10 @@ type CinemaServer interface {
 	ScreenFilmId(context.Context, *ScreenFilmIdRequest) (*ScreenFilmIdResponse, error)
 	//根据影片ID获取全部影片信息
 	FilmAll(context.Context, *FilmAllRequest) (*FilmAllResponse, error)
+	//根据影院ID获取影厅列表
+	HallList(context.Context, *HallListRequest) (*HallListResponse, error)
+	//根据日期、影院ID、影片ID获取排片场次
+	ScreenList(context.Context, *ScreenListRequest) (*ScreenListResponse, error)
 	mustEmbedUnimplementedCinemaServer()
 }
 
@@ -154,6 +180,12 @@ func (UnimplementedCinemaServer) ScreenFilmId(context.Context, *ScreenFilmIdRequ
 }
 func (UnimplementedCinemaServer) FilmAll(context.Context, *FilmAllRequest) (*FilmAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FilmAll not implemented")
+}
+func (UnimplementedCinemaServer) HallList(context.Context, *HallListRequest) (*HallListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HallList not implemented")
+}
+func (UnimplementedCinemaServer) ScreenList(context.Context, *ScreenListRequest) (*ScreenListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ScreenList not implemented")
 }
 func (UnimplementedCinemaServer) mustEmbedUnimplementedCinemaServer() {}
 
@@ -294,6 +326,42 @@ func _Cinema_FilmAll_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Cinema_HallList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HallListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CinemaServer).HallList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cinema.Cinema/HallList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CinemaServer).HallList(ctx, req.(*HallListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Cinema_ScreenList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScreenListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CinemaServer).ScreenList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cinema.Cinema/ScreenList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CinemaServer).ScreenList(ctx, req.(*ScreenListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Cinema_ServiceDesc is the grpc.ServiceDesc for Cinema service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -328,6 +396,14 @@ var Cinema_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FilmAll",
 			Handler:    _Cinema_FilmAll_Handler,
+		},
+		{
+			MethodName: "HallList",
+			Handler:    _Cinema_HallList_Handler,
+		},
+		{
+			MethodName: "ScreenList",
+			Handler:    _Cinema_ScreenList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

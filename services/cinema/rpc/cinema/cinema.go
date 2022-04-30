@@ -27,11 +27,17 @@ type (
 	FilmListInfo             = cinema.FilmListInfo
 	FilmListRequest          = cinema.FilmListRequest
 	FilmListResponse         = cinema.FilmListResponse
+	HallInfo                 = cinema.HallInfo
+	HallListRequest          = cinema.HallListRequest
+	HallListResponse         = cinema.HallListResponse
 	ScreenCinemaInfo         = cinema.ScreenCinemaInfo
 	ScreenCinemaInfoRequest  = cinema.ScreenCinemaInfoRequest
 	ScreenCinemaInfoResponse = cinema.ScreenCinemaInfoResponse
 	ScreenFilmIdRequest      = cinema.ScreenFilmIdRequest
 	ScreenFilmIdResponse     = cinema.ScreenFilmIdResponse
+	ScreenInfo               = cinema.ScreenInfo
+	ScreenListRequest        = cinema.ScreenListRequest
+	ScreenListResponse       = cinema.ScreenListResponse
 
 	Cinema interface {
 		// 影片列表
@@ -48,6 +54,10 @@ type (
 		ScreenFilmId(ctx context.Context, in *ScreenFilmIdRequest, opts ...grpc.CallOption) (*ScreenFilmIdResponse, error)
 		// 根据影片ID获取全部影片信息
 		FilmAll(ctx context.Context, in *FilmAllRequest, opts ...grpc.CallOption) (*FilmAllResponse, error)
+		// 根据影院ID获取影厅列表
+		HallList(ctx context.Context, in *HallListRequest, opts ...grpc.CallOption) (*HallListResponse, error)
+		// 根据日期、影院ID、影片ID获取排片场次
+		ScreenList(ctx context.Context, in *ScreenListRequest, opts ...grpc.CallOption) (*ScreenListResponse, error)
 	}
 
 	defaultCinema struct {
@@ -101,4 +111,16 @@ func (m *defaultCinema) ScreenFilmId(ctx context.Context, in *ScreenFilmIdReques
 func (m *defaultCinema) FilmAll(ctx context.Context, in *FilmAllRequest, opts ...grpc.CallOption) (*FilmAllResponse, error) {
 	client := cinema.NewCinemaClient(m.cli.Conn())
 	return client.FilmAll(ctx, in, opts...)
+}
+
+// 根据影院ID获取影厅列表
+func (m *defaultCinema) HallList(ctx context.Context, in *HallListRequest, opts ...grpc.CallOption) (*HallListResponse, error) {
+	client := cinema.NewCinemaClient(m.cli.Conn())
+	return client.HallList(ctx, in, opts...)
+}
+
+// 根据日期、影院ID、影片ID获取排片场次
+func (m *defaultCinema) ScreenList(ctx context.Context, in *ScreenListRequest, opts ...grpc.CallOption) (*ScreenListResponse, error) {
+	client := cinema.NewCinemaClient(m.cli.Conn())
+	return client.ScreenList(ctx, in, opts...)
 }

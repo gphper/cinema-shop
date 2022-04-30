@@ -63,3 +63,15 @@ func (s *CinemaServer) FilmAll(ctx context.Context, in *cinema.FilmAllRequest) (
 	l := logic.NewFilmAllLogic(ctx, s.svcCtx)
 	return l.FilmAll(in)
 }
+
+// 根据影院ID获取影厅列表
+func (s *CinemaServer) HallList(ctx context.Context, in *cinema.HallListRequest) (*cinema.HallListResponse, error) {
+	l := logic.NewHallListLogic(ctx, s.svcCtx)
+	return l.HallList(in)
+}
+
+// 根据日期、影院ID、影片ID获取排片场次
+func (s *CinemaServer) ScreenList(ctx context.Context, in *cinema.ScreenListRequest) (*cinema.ScreenListResponse, error) {
+	l := logic.NewScreenListLogic(ctx, s.svcCtx)
+	return l.ScreenList(in)
+}
