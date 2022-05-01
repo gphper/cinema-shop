@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package order;
+option go_package="./order";
+
+//根据排片ID获取已被占用的座位
+message TicketSeatRequest {
+  int64 screen_id = 1;
+}
+
+message TicketSeatResponse {
+  repeated string seat  = 1;
+}
+
+service Order {
+  //根据排片ID获取已被占用的座位
+  rpc TicketSeat(TicketSeatRequest) returns(TicketSeatResponse);
+}
