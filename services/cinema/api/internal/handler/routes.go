@@ -41,6 +41,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/screen_list",
 				Handler: Screen.ScreenListHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/screen_detail",
+				Handler: Screen.ScreenDetailHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/api/screen/v1"),
 	)

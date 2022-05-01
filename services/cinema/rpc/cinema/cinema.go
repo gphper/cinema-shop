@@ -33,6 +33,8 @@ type (
 	ScreenCinemaInfo         = cinema.ScreenCinemaInfo
 	ScreenCinemaInfoRequest  = cinema.ScreenCinemaInfoRequest
 	ScreenCinemaInfoResponse = cinema.ScreenCinemaInfoResponse
+	ScreenDetailRequest      = cinema.ScreenDetailRequest
+	ScreenDetailResponse     = cinema.ScreenDetailResponse
 	ScreenFilmIdRequest      = cinema.ScreenFilmIdRequest
 	ScreenFilmIdResponse     = cinema.ScreenFilmIdResponse
 	ScreenInfo               = cinema.ScreenInfo
@@ -58,6 +60,8 @@ type (
 		HallList(ctx context.Context, in *HallListRequest, opts ...grpc.CallOption) (*HallListResponse, error)
 		// 根据日期、影院ID、影片ID获取排片场次
 		ScreenList(ctx context.Context, in *ScreenListRequest, opts ...grpc.CallOption) (*ScreenListResponse, error)
+		// 根据排片ID获取详情
+		ScreenDetail(ctx context.Context, in *ScreenDetailRequest, opts ...grpc.CallOption) (*ScreenDetailResponse, error)
 	}
 
 	defaultCinema struct {
@@ -123,4 +127,10 @@ func (m *defaultCinema) HallList(ctx context.Context, in *HallListRequest, opts 
 func (m *defaultCinema) ScreenList(ctx context.Context, in *ScreenListRequest, opts ...grpc.CallOption) (*ScreenListResponse, error) {
 	client := cinema.NewCinemaClient(m.cli.Conn())
 	return client.ScreenList(ctx, in, opts...)
+}
+
+// 根据排片ID获取详情
+func (m *defaultCinema) ScreenDetail(ctx context.Context, in *ScreenDetailRequest, opts ...grpc.CallOption) (*ScreenDetailResponse, error) {
+	client := cinema.NewCinemaClient(m.cli.Conn())
+	return client.ScreenDetail(ctx, in, opts...)
 }

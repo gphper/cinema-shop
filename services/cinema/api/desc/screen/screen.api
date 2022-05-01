@@ -51,3 +51,20 @@ type (
 		ErrMsg  string           `json:"err_msg"`
     }
 )
+
+type (
+    ScreenDetailReq struct{
+       ScreenId int64 `json:"screen_id"`
+    }
+
+    ScreenDetailInfo struct{
+        ScreenId int64 `json:"screen_id"`
+        SeatMap string `json:"seat_map"`
+    }
+
+    ScreenDetailResp struct{
+        Data ScreenDetailInfo `json:"data"`
+        ErrCode int              `json:"err_code"`
+		ErrMsg  string           `json:"err_msg"`
+    }
+)

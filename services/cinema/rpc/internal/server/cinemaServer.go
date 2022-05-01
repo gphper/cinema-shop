@@ -75,3 +75,9 @@ func (s *CinemaServer) ScreenList(ctx context.Context, in *cinema.ScreenListRequ
 	l := logic.NewScreenListLogic(ctx, s.svcCtx)
 	return l.ScreenList(in)
 }
+
+// 根据排片ID获取详情
+func (s *CinemaServer) ScreenDetail(ctx context.Context, in *cinema.ScreenDetailRequest) (*cinema.ScreenDetailResponse, error) {
+	l := logic.NewScreenDetailLogic(ctx, s.svcCtx)
+	return l.ScreenDetail(in)
+}

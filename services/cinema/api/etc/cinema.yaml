@@ -1,8 +1,17 @@
 Name: cinema
 Host: 0.0.0.0
 Port: 8889
+CacheRedis:
+  - Host: localhost:6379
+    Pass: ""
+    Type: node
 CinemaRpcConf:
   Etcd:
     Hosts:
     - 127.0.0.1:2379
     Key: cinema.rpc
+OrderRpcConf:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: order.rpc    

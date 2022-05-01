@@ -147,6 +147,22 @@ message ScreenListResponse{
   repeated ScreenInfo data = 1;
 }
 
+//根据排片ID获取详情
+message ScreenDetailRequest{
+  int64 screen_id = 1;
+}
+
+message ScreenDetailResponse{
+  int64 screen_id = 1;
+  int64 cinema_id = 2;
+  int64 film_id = 3;
+  int64 hall_id = 4;
+  int64 price = 5;
+  int64 seat_num = 6;
+  string start_time = 7;
+  string current_seat = 8;
+}
+
 service Cinema {
   //影片列表
   rpc FilmList(FilmListRequest) returns(FilmListResponse);
@@ -166,4 +182,6 @@ service Cinema {
   rpc HallList(HallListRequest) returns(HallListResponse);
   //根据日期、影院ID、影片ID获取排片场次
   rpc ScreenList(ScreenListRequest) returns(ScreenListResponse);
+  //根据排片ID获取详情
+  rpc ScreenDetail(ScreenDetailRequest) returns(ScreenDetailResponse);
 }

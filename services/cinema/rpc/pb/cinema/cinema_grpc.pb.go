@@ -40,6 +40,8 @@ type CinemaClient interface {
 	HallList(ctx context.Context, in *HallListRequest, opts ...grpc.CallOption) (*HallListResponse, error)
 	//根据日期、影院ID、影片ID获取排片场次
 	ScreenList(ctx context.Context, in *ScreenListRequest, opts ...grpc.CallOption) (*ScreenListResponse, error)
+	//根据排片ID获取详情
+	ScreenDetail(ctx context.Context, in *ScreenDetailRequest, opts ...grpc.CallOption) (*ScreenDetailResponse, error)
 }
 
 type cinemaClient struct {
@@ -131,6 +133,15 @@ func (c *cinemaClient) ScreenList(ctx context.Context, in *ScreenListRequest, op
 	return out, nil
 }
 
+func (c *cinemaClient) ScreenDetail(ctx context.Context, in *ScreenDetailRequest, opts ...grpc.CallOption) (*ScreenDetailResponse, error) {
+	out := new(ScreenDetailResponse)
+	err := c.cc.Invoke(ctx, "/cinema.Cinema/ScreenDetail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CinemaServer is the server API for Cinema service.
 // All implementations must embed UnimplementedCinemaServer
 // for forward compatibility
@@ -153,6 +164,8 @@ type CinemaServer interface {
 	HallList(context.Context, *HallListRequest) (*HallListResponse, error)
 	//根据日期、影院ID、影片ID获取排片场次
 	ScreenList(context.Context, *ScreenListRequest) (*ScreenListResponse, error)
+	//根据排片ID获取详情
+	ScreenDetail(context.Context, *ScreenDetailRequest) (*ScreenDetailResponse, error)
 	mustEmbedUnimplementedCinemaServer()
 }
 
@@ -186,6 +199,9 @@ func (UnimplementedCinemaServer) HallList(context.Context, *HallListRequest) (*H
 }
 func (UnimplementedCinemaServer) ScreenList(context.Context, *ScreenListRequest) (*ScreenListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ScreenList not implemented")
+}
+func (UnimplementedCinemaServer) ScreenDetail(context.Context, *ScreenDetailRequest) (*ScreenDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ScreenDetail not implemented")
 }
 func (UnimplementedCinemaServer) mustEmbedUnimplementedCinemaServer() {}
 
@@ -362,6 +378,24 @@ func _Cinema_ScreenList_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Cinema_ScreenDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScreenDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CinemaServer).ScreenDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cinema.Cinema/ScreenDetail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CinemaServer).ScreenDetail(ctx, req.(*ScreenDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Cinema_ServiceDesc is the grpc.ServiceDesc for Cinema service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -404,6 +438,10 @@ var Cinema_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ScreenList",
 			Handler:    _Cinema_ScreenList_Handler,
+		},
+		{
+			MethodName: "ScreenDetail",
+			Handler:    _Cinema_ScreenDetail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

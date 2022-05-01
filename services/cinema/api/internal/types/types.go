@@ -85,6 +85,21 @@ type ScreenListResp struct {
 	ErrMsg  string       `json:"err_msg"`
 }
 
+type ScreenDetailReq struct {
+	ScreenId int64 `json:"screen_id"`
+}
+
+type ScreenDetailInfo struct {
+	ScreenId int64  `json:"screen_id"`
+	SeatMap  string `json:"seat_map"`
+}
+
+type ScreenDetailResp struct {
+	Data    ScreenDetailInfo `json:"data"`
+	ErrCode int              `json:"err_code"`
+	ErrMsg  string           `json:"err_msg"`
+}
+
 type CinemaDetailReq struct {
 	CinemaId int64 `json:"cinema_id"`
 }
