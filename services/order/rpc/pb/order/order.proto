@@ -12,7 +12,20 @@ message TicketSeatResponse {
   repeated string seat  = 1;
 }
 
+//创建订单
+message OrderRequest{
+  int64 screen_id = 1;
+  int64 seat_num = 2;
+  repeated string seat_map = 3;
+}
+
+message OrderResponse{
+  string order_key = 1;
+}
+
 service Order {
   //根据排片ID获取已被占用的座位
   rpc TicketSeat(TicketSeatRequest) returns(TicketSeatResponse);
+  //创建订单
+  rpc OrderCreate(OrderRequest) returns(OrderResponse);
 }

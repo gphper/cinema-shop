@@ -96,7 +96,6 @@ func (l *ScreenDetailLogic) _GetSoldSeat(screenId int64) ([]string, error) {
 	seats, err := l._GetCache(key)
 
 	if errors.Is(err, SEATEMPTYERR) {
-		fmt.Println("***********")
 		v, err, _ := gsf.Do(key, func() (interface{}, error) {
 			dbSeat, err := l._GetDb(screenId)
 			if err != nil {

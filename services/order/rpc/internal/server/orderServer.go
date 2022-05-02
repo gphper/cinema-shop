@@ -27,3 +27,9 @@ func (s *OrderServer) TicketSeat(ctx context.Context, in *order.TicketSeatReques
 	l := logic.NewTicketSeatLogic(ctx, s.svcCtx)
 	return l.TicketSeat(in)
 }
+
+// 创建订单
+func (s *OrderServer) OrderCreate(ctx context.Context, in *order.OrderRequest) (*order.OrderResponse, error) {
+	l := logic.NewOrderCreateLogic(ctx, s.svcCtx)
+	return l.OrderCreate(in)
+}

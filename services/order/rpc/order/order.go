@@ -13,12 +13,16 @@ import (
 )
 
 type (
+	OrderRequest       = order.OrderRequest
+	OrderResponse      = order.OrderResponse
 	TicketSeatRequest  = order.TicketSeatRequest
 	TicketSeatResponse = order.TicketSeatResponse
 
 	Order interface {
 		// 根据排片ID获取已被占用的座位
 		TicketSeat(ctx context.Context, in *TicketSeatRequest, opts ...grpc.CallOption) (*TicketSeatResponse, error)
+		// 创建订单
+		OrderCreate(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderResponse, error)
 	}
 
 	defaultOrder struct {
@@ -36,4 +40,10 @@ func NewOrder(cli zrpc.Client) Order {
 func (m *defaultOrder) TicketSeat(ctx context.Context, in *TicketSeatRequest, opts ...grpc.CallOption) (*TicketSeatResponse, error) {
 	client := order.NewOrderClient(m.cli.Conn())
 	return client.TicketSeat(ctx, in, opts...)
+}
+
+// 创建订单
+func (m *defaultOrder) OrderCreate(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderResponse, error) {
+	client := order.NewOrderClient(m.cli.Conn())
+	return client.OrderCreate(ctx, in, opts...)
 }

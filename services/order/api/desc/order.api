@@ -1,25 +1,29 @@
-
 syntax = "v1"
 
 info (
-	title: // TODO: add title
-	desc: // TODO: add description
+	title: "Order"
+	desc: "Order Server"
 	author: "gphper"
 	email: "570165887@qq.com"
 )
 
-type request {
-	// TODO: add members here and delete this comment
-}
+type (
+	OrderReq {
+		ScreenId int64    `json:"screen_id"`
+		SeatMap  []string `json:"seat_map"`
+	}
 
-type response {
-	// TODO: add members here and delete this comment
-}
+	OrderResp {
+		OrderKey string `json:"order_key"`
+	}
+)
 
+@server(
+	jwt: Auth
+	prefix: api/order/v1
+	group: Order
+)
 service order{
-	@handler GetUser // TODO: set handler name and delete this comment
-	get /users/id/:userId(request) returns(response)
-
-	@handler CreateUser // TODO: set handler name and delete this comment
-	post /users/create(request)
+	@handler Order
+	post /create(OrderReq) returns(OrderResp)
 }

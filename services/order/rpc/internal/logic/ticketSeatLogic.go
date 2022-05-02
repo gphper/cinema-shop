@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"fmt"
 
 	"cinema-shop/services/order/rpc/internal/svc"
 	"cinema-shop/services/order/rpc/pb/order"
@@ -44,8 +43,6 @@ func (l *TicketSeatLogic) TicketSeat(in *order.TicketSeatRequest) (*order.Ticket
 			seats[k] = v.Seat.String
 		}
 	}
-
-	fmt.Printf("&&&&&&&&%+v", seats)
 
 	resp.Seat = seats
 
