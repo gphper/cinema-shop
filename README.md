@@ -36,7 +36,7 @@ make order-gen-model-order
 
 ### 可能用到的
 
- `mysql`  `redis`  `etcd` `nsq`
+ `mysql`  `redis`  `etcd` `rebbitmq`
 
 
 
