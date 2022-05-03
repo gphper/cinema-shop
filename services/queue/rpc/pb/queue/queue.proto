@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package queue;
+option go_package="./queue";
+
+//创建订单队列
+message OrderCreateRequest {
+  int64 screen_id = 1;
+  int64 uid = 2;
+  repeated string seat = 3;
+}
+
+message OrderCreateResponse {
+  string order_key = 1;
+}
+
+service Queue {
+  //创建订单队列
+  rpc OrderQueue(OrderCreateRequest) returns(OrderCreateResponse);
+}

@@ -58,7 +58,8 @@ end
 		args[2+k] = v
 	}
 	result, err := redisObj.Eval(script, []string{"seat:1"}, args...)
-	if err != nil {
+
+	if err != nil && !errors.Is(err, redis.Nil) {
 		return resp, errors.Wrap(err, "Order RPC:OrderCreate [Redis Eval] DbError")
 	}
 
@@ -66,7 +67,7 @@ end
 		return resp, errors.Wrap(err, "Buy Ticket Fail")
 	}
 
-	//TODO 将订单信息放入队列中
-
-	return &order.OrderResponse{}, nil
+	return &order.OrderResponse{
+		Ack: 1,
+	}, nil
 }

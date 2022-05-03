@@ -11,6 +11,11 @@ OrderRpcConf:
     Hosts:
     - 127.0.0.1:2379
     Key: order.rpc    
+QueueRpcConf:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: queue.rpc        
 Auth:
   AccessSecret: "a522383d-983f-4914-9d12-0cdc439c9a5c"
   AccessExpire: 7200

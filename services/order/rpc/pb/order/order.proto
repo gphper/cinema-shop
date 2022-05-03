@@ -20,7 +20,7 @@ message OrderRequest{
 }
 
 message OrderResponse{
-  string order_key = 1;
+  int64 ack = 1;
 }
 
 service Order {

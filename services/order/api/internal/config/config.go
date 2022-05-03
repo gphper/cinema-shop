@@ -13,4 +13,5 @@ type Config struct {
 	}
 	CinemaRpcConf zrpc.RpcClientConf
 	OrderRpcConf  zrpc.RpcClientConf
+	QueueRpcConf  zrpc.RpcClientConf
 }

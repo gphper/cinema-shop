@@ -12,6 +12,7 @@ import (
 	"cinema-shop/services/order/api/internal/svc"
 	"cinema-shop/services/order/api/internal/types"
 	"cinema-shop/services/order/rpc/order"
+	"cinema-shop/services/queue/rpc/queue"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -54,18 +55,30 @@ func (l *OrderLogic) Order(req *types.OrderReq) (resp *types.OrderResp, err erro
 			x, _ := strconv.Atoi(seatArr[0])
 			y, _ := strconv.Atoi(seatArr[1])
 			if x > row-1 || y > col-1 || seatMap[x][y] == 0 {
-				return resp, errorxx.NewCodeError(2001, "Illegal Seat Information")
+				return resp, errorxx.NewCodeError(20010, "Illegal Seat Information")
 			}
 		}
 	}
 
-	orderRespm, err := l.svcCtx.OrderRpcClient.OrderCreate(l.ctx, &order.OrderRequest{
+	_, err = l.svcCtx.OrderRpcClient.OrderCreate(l.ctx, &order.OrderRequest{
 		ScreenId: req.ScreenId,
 		SeatMap:  req.SeatMap,
 		SeatNum:  screenResp.SeatNum,
 	})
+	if err != nil {
+		return resp, errorxx.NewCodeError(2001, err.Error())
+	}
 
-	fmt.Printf("*******%+v", orderRespm)
+	queueResp, err := l.svcCtx.QueueRpcClient.OrderQueue(l.ctx, &queue.OrderCreateRequest{
+		ScreenId: req.ScreenId,
+		Uid:      10,
+		Seat:     req.SeatMap,
+	})
+	if err != nil {
+		return resp, errorxx.NewCodeError(2001, err.Error())
+	}
+
+	fmt.Println(queueResp)
 
 	return
 }
