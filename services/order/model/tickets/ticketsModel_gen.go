@@ -28,7 +28,7 @@ type (
 	ticketsModel interface {
 		Insert(ctx context.Context, session sqlx.Session, data *Tickets) (sql.Result, error)
 		FindOne(ctx context.Context, ticketId int64) (*Tickets, error)
-		Update(ctx context.Context, data *Tickets) error
+		Update(ctx context.Context, session sqlx.Session, data *Tickets) error
 		Delete(ctx context.Context, ticketId int64) error
 	}
 
@@ -85,10 +85,13 @@ func (m *defaultTicketsModel) FindOne(ctx context.Context, ticketId int64) (*Tic
 	}
 }
 
-func (m *defaultTicketsModel) Update(ctx context.Context, data *Tickets) error {
+func (m *defaultTicketsModel) Update(ctx context.Context, session sqlx.Session, data *Tickets) error {
 	ticketsTicketIdKey := fmt.Sprintf("%s%v", cacheTicketsTicketIdPrefix, data.TicketId)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `ticket_id` = ?", m.table, ticketsRowsWithPlaceHolder)
+		if session != nil {
+			return session.ExecCtx(ctx, query, data.OrderId, data.TicketSn, data.CreatedAt, data.ScreenId, data.Status, data.CheckTime, data.Seat, data.TicketId)
+		}
 		return conn.ExecCtx(ctx, query, data.OrderId, data.TicketSn, data.CreatedAt, data.ScreenId, data.Status, data.CheckTime, data.Seat, data.TicketId)
 	}, ticketsTicketIdKey)
 	return err

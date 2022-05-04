@@ -9,3 +9,4 @@ CREATE TABLE tickets(
     seat VARCHAR(255)    COMMENT '座位编号【1#2 1排2座】' ,
     PRIMARY KEY (ticket_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT = '影票';
+CREATE INDEX order_id_index ON tickets(order_id);

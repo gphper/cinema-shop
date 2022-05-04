@@ -28,7 +28,7 @@ type (
 	ordersModel interface {
 		Insert(ctx context.Context, session sqlx.Session, data *Orders) (sql.Result, error)
 		FindOne(ctx context.Context, orderId int64) (*Orders, error)
-		Update(ctx context.Context, data *Orders) error
+		Update(ctx context.Context, session sqlx.Session, data *Orders) error
 		Delete(ctx context.Context, orderId int64) error
 	}
 
@@ -87,10 +87,13 @@ func (m *defaultOrdersModel) FindOne(ctx context.Context, orderId int64) (*Order
 	}
 }
 
-func (m *defaultOrdersModel) Update(ctx context.Context, data *Orders) error {
+func (m *defaultOrdersModel) Update(ctx context.Context, session sqlx.Session, data *Orders) error {
 	ordersOrderIdKey := fmt.Sprintf("%s%v", cacheOrdersOrderIdPrefix, data.OrderId)
 	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `order_id` = ?", m.table, ordersRowsWithPlaceHolder)
+		if session != nil {
+			return session.ExecCtx(ctx, query, data.OrderSn, data.ScreenId, data.CreatedAt, data.Uid, data.UpdatedAt, data.Amount, data.PayTime, data.Status, data.OrderKey, data.OrderId)
+		}
 		return conn.ExecCtx(ctx, query, data.OrderSn, data.ScreenId, data.CreatedAt, data.Uid, data.UpdatedAt, data.Amount, data.PayTime, data.Status, data.OrderKey, data.OrderId)
 	}, ordersOrderIdKey)
 	return err
