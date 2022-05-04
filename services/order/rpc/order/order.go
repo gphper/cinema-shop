@@ -13,6 +13,8 @@ import (
 )
 
 type (
+	OrderGenRequest    = order.OrderGenRequest
+	OrderGenResponse   = order.OrderGenResponse
 	OrderRequest       = order.OrderRequest
 	OrderResponse      = order.OrderResponse
 	TicketSeatRequest  = order.TicketSeatRequest
@@ -23,6 +25,8 @@ type (
 		TicketSeat(ctx context.Context, in *TicketSeatRequest, opts ...grpc.CallOption) (*TicketSeatResponse, error)
 		// 创建订单
 		OrderCreate(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderResponse, error)
+		// 生成订单数据
+		OrderGen(ctx context.Context, in *OrderGenRequest, opts ...grpc.CallOption) (*OrderGenResponse, error)
 	}
 
 	defaultOrder struct {
@@ -46,4 +50,10 @@ func (m *defaultOrder) TicketSeat(ctx context.Context, in *TicketSeatRequest, op
 func (m *defaultOrder) OrderCreate(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderResponse, error) {
 	client := order.NewOrderClient(m.cli.Conn())
 	return client.OrderCreate(ctx, in, opts...)
+}
+
+// 生成订单数据
+func (m *defaultOrder) OrderGen(ctx context.Context, in *OrderGenRequest, opts ...grpc.CallOption) (*OrderGenResponse, error) {
+	client := order.NewOrderClient(m.cli.Conn())
+	return client.OrderGen(ctx, in, opts...)
 }

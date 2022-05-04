@@ -26,7 +26,7 @@ var (
 
 type (
 	ticketsModel interface {
-		Insert(ctx context.Context, data *Tickets) (sql.Result, error)
+		Insert(ctx context.Context, session sqlx.Session, data *Tickets) (sql.Result, error)
 		FindOne(ctx context.Context, ticketId int64) (*Tickets, error)
 		Update(ctx context.Context, data *Tickets) error
 		Delete(ctx context.Context, ticketId int64) error
@@ -43,7 +43,7 @@ type (
 		TicketSn  sql.NullString `db:"ticket_sn"`  // 门票编号
 		CreatedAt sql.NullTime   `db:"created_at"` // 创建时间
 		ScreenId  sql.NullInt64  `db:"screen_id"`  // 排片ID
-		Status    sql.NullString `db:"status"`     // 状态【1待支付 2支付完成 3检票成功 4已退票 5自动取消 6已过期】
+		Status    sql.NullInt64  `db:"status"`     // 状态【1待支付 2支付完成 3检票成功 4已退票 5自动取消 6已过期】
 		CheckTime sql.NullTime   `db:"check_time"` // 检票时间
 		Seat      sql.NullString `db:"seat"`       // 座位编号【1#2 1排2座】
 	}
@@ -56,10 +56,13 @@ func newTicketsModel(conn sqlx.SqlConn, c cache.CacheConf) *defaultTicketsModel 
 	}
 }
 
-func (m *defaultTicketsModel) Insert(ctx context.Context, data *Tickets) (sql.Result, error) {
+func (m *defaultTicketsModel) Insert(ctx context.Context, session sqlx.Session, data *Tickets) (sql.Result, error) {
 	ticketsTicketIdKey := fmt.Sprintf("%s%v", cacheTicketsTicketIdPrefix, data.TicketId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, ticketsRowsExpectAutoSet)
+		if session != nil {
+			return session.ExecCtx(ctx, query, data.OrderId, data.TicketSn, data.CreatedAt, data.ScreenId, data.Status, data.CheckTime, data.Seat)
+		}
 		return conn.ExecCtx(ctx, query, data.OrderId, data.TicketSn, data.CreatedAt, data.ScreenId, data.Status, data.CheckTime, data.Seat)
 	}, ticketsTicketIdKey)
 	return ret, err

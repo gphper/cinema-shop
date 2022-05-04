@@ -33,3 +33,9 @@ func (s *OrderServer) OrderCreate(ctx context.Context, in *order.OrderRequest) (
 	l := logic.NewOrderCreateLogic(ctx, s.svcCtx)
 	return l.OrderCreate(in)
 }
+
+// 生成订单数据
+func (s *OrderServer) OrderGen(ctx context.Context, in *order.OrderGenRequest) (*order.OrderGenResponse, error) {
+	l := logic.NewOrderGenLogic(ctx, s.svcCtx)
+	return l.OrderGen(in)
+}

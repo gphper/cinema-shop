@@ -2,7 +2,10 @@ package logic
 
 import (
 	"context"
+	"crypto/md5"
 	"encoding/json"
+	"fmt"
+	"time"
 
 	"cinema-shop/services/queue/rpc/internal/svc"
 	"cinema-shop/services/queue/rpc/pb/queue"
@@ -38,14 +41,20 @@ func (l *OrderQueueLogic) OrderQueue(in *queue.OrderCreateRequest) (*queue.Order
 	type OrderMessage struct {
 		ScreenId int64    `json:"screen_id"`
 		Uid      int64    `json:"uid"`
+		Amount   int64    `json:"amount"`
 		Seat     []string `json:"seat"`
+		OrderKey string   `json:"order_key"`
 	}
 
 	orderMessage := OrderMessage{
 		ScreenId: in.ScreenId,
 		Uid:      in.Uid,
+		Amount:   in.Amount,
 		Seat:     in.Seat,
 	}
+
+	key := fmt.Sprintf("%d:%d:%s:%s", in.ScreenId, in.Uid, in.Seat, time.Nanosecond)
+	orderMessage.OrderKey = fmt.Sprintf("%x", md5.Sum([]byte(key)))
 
 	msgJson, err := json.Marshal(orderMessage)
 	if err != nil {
@@ -68,6 +77,6 @@ func (l *OrderQueueLogic) OrderQueue(in *queue.OrderCreateRequest) (*queue.Order
 	}
 
 	return &queue.OrderCreateResponse{
-		OrderKey: "aaaaaaaaaaa",
+		OrderKey: orderMessage.OrderKey,
 	}, nil
 }

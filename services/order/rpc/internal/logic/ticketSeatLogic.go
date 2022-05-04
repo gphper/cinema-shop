@@ -17,6 +17,8 @@ type TicketSeatLogic struct {
 	logx.Logger
 }
 
+
+
 func NewTicketSeatLogic(ctx context.Context, svcCtx *svc.ServiceContext) *TicketSeatLogic {
 	return &TicketSeatLogic{
 		ctx:    ctx,

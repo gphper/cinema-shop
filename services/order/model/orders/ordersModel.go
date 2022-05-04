@@ -8,35 +8,35 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
-var _ OrderModel = (*customOrderModel)(nil)
+var _ OrdersModel = (*customOrdersModel)(nil)
 
 type (
-	// OrderModel is an interface to be customized, add more methods here,
-	// and implement the added methods in customOrderModel.
-	OrderModel interface {
-		orderModel
+	// OrdersModel is an interface to be customized, add more methods here,
+	// and implement the added methods in customOrdersModel.
+	OrdersModel interface {
+		ordersModel
 		Trans(ctx context.Context, fn func(context context.Context, session sqlx.Session) error) error
 		RowBuilder() squirrel.SelectBuilder
 		CountBuilder(field string) squirrel.SelectBuilder
 		SumBuilder(field string) squirrel.SelectBuilder
 		FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error)
-		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Order, error)
+		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Orders, error)
 	}
 
-	customOrderModel struct {
-		*defaultOrderModel
+	customOrdersModel struct {
+		*defaultOrdersModel
 	}
 )
 
-// NewOrderModel returns a model for the database table.
-func NewOrderModel(conn sqlx.SqlConn, c cache.CacheConf) OrderModel {
-	return &customOrderModel{
-		defaultOrderModel: newOrderModel(conn, c),
+// NewOrdersModel returns a model for the database table.
+func NewOrdersModel(conn sqlx.SqlConn, c cache.CacheConf) OrdersModel {
+	return &customOrdersModel{
+		defaultOrdersModel: newOrdersModel(conn, c),
 	}
 }
 
 // Count
-func (m *defaultOrderModel) FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error) {
+func (m *defaultOrdersModel) FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error) {
 
 	query, values, err := countBuilder.ToSql()
 	if err != nil {
@@ -53,7 +53,7 @@ func (m *defaultOrderModel) FindCount(ctx context.Context, countBuilder squirrel
 	}
 }
 
-func (m *defaultOrderModel) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Order, error) {
+func (m *defaultOrdersModel) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Orders, error) {
 
 	if orderBy == "" {
 		rowBuilder = rowBuilder.OrderBy("id DESC")
@@ -66,7 +66,7 @@ func (m *defaultOrderModel) FindAll(ctx context.Context, rowBuilder squirrel.Sel
 		return nil, err
 	}
 
-	var resp []*Order
+	var resp []*Orders
 	err = m.QueryRowsNoCacheCtx(ctx, &resp, query, values...)
 	switch err {
 	case nil:
@@ -77,7 +77,7 @@ func (m *defaultOrderModel) FindAll(ctx context.Context, rowBuilder squirrel.Sel
 }
 
 // export logic
-func (m *defaultOrderModel) Trans(ctx context.Context, fn func(ctx context.Context, session sqlx.Session) error) error {
+func (m *defaultOrdersModel) Trans(ctx context.Context, fn func(ctx context.Context, session sqlx.Session) error) error {
 
 	return m.TransactCtx(ctx, func(ctx context.Context, session sqlx.Session) error {
 		return fn(ctx, session)
@@ -86,16 +86,16 @@ func (m *defaultOrderModel) Trans(ctx context.Context, fn func(ctx context.Conte
 }
 
 // export logic
-func (m *defaultOrderModel) RowBuilder() squirrel.SelectBuilder {
-	return squirrel.Select(orderRows).From(m.table)
+func (m *defaultOrdersModel) RowBuilder() squirrel.SelectBuilder {
+	return squirrel.Select(ordersRows).From(m.table)
 }
 
 // export logic
-func (m *defaultOrderModel) CountBuilder(field string) squirrel.SelectBuilder {
+func (m *defaultOrdersModel) CountBuilder(field string) squirrel.SelectBuilder {
 	return squirrel.Select("COUNT(" + field + ")").From(m.table)
 }
 
 // export logic
-func (m *defaultOrderModel) SumBuilder(field string) squirrel.SelectBuilder {
+func (m *defaultOrdersModel) SumBuilder(field string) squirrel.SelectBuilder {
 	return squirrel.Select("IFNULL(SUM(" + field + "),0)").From(m.table)
 }

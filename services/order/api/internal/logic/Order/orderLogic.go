@@ -3,7 +3,6 @@ package Order
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -32,6 +31,13 @@ func NewOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OrderLogic 
 }
 
 func (l *OrderLogic) Order(req *types.OrderReq) (resp *types.OrderResp, err error) {
+
+	resp = new(types.OrderResp)
+
+	id, err := l.ctx.Value("userId").(json.Number).Int64()
+	if err != nil {
+		return resp, errorxx.NewCodeError(2001, "Get UserId Fail")
+	}
 
 	screenResp, err := l.svcCtx.CinemaRpcClient.ScreenDetail(l.ctx, &cinema.ScreenDetailRequest{
 		ScreenId: req.ScreenId,
@@ -71,14 +77,15 @@ func (l *OrderLogic) Order(req *types.OrderReq) (resp *types.OrderResp, err erro
 
 	queueResp, err := l.svcCtx.QueueRpcClient.OrderQueue(l.ctx, &queue.OrderCreateRequest{
 		ScreenId: req.ScreenId,
-		Uid:      10,
+		Uid:      id,
 		Seat:     req.SeatMap,
+		Amount:   screenResp.Price * int64(len(req.SeatMap)),
 	})
 	if err != nil {
 		return resp, errorxx.NewCodeError(2001, err.Error())
 	}
 
-	fmt.Println(queueResp)
+	resp.OrderKey = queueResp.OrderKey
 
 	return
 }

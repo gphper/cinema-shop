@@ -1,0 +1,9 @@
+RabbitMq:
+  Host: 127.0.0.1:5672
+  Username: guest
+  Password: guest
+OrderRpcConf:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: order.rpc

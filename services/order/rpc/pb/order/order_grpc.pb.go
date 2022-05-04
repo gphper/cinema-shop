@@ -26,6 +26,8 @@ type OrderClient interface {
 	TicketSeat(ctx context.Context, in *TicketSeatRequest, opts ...grpc.CallOption) (*TicketSeatResponse, error)
 	//创建订单
 	OrderCreate(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderResponse, error)
+	//生成订单数据
+	OrderGen(ctx context.Context, in *OrderGenRequest, opts ...grpc.CallOption) (*OrderGenResponse, error)
 }
 
 type orderClient struct {
@@ -54,6 +56,15 @@ func (c *orderClient) OrderCreate(ctx context.Context, in *OrderRequest, opts ..
 	return out, nil
 }
 
+func (c *orderClient) OrderGen(ctx context.Context, in *OrderGenRequest, opts ...grpc.CallOption) (*OrderGenResponse, error) {
+	out := new(OrderGenResponse)
+	err := c.cc.Invoke(ctx, "/order.Order/OrderGen", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServer is the server API for Order service.
 // All implementations must embed UnimplementedOrderServer
 // for forward compatibility
@@ -62,6 +73,8 @@ type OrderServer interface {
 	TicketSeat(context.Context, *TicketSeatRequest) (*TicketSeatResponse, error)
 	//创建订单
 	OrderCreate(context.Context, *OrderRequest) (*OrderResponse, error)
+	//生成订单数据
+	OrderGen(context.Context, *OrderGenRequest) (*OrderGenResponse, error)
 	mustEmbedUnimplementedOrderServer()
 }
 
@@ -74,6 +87,9 @@ func (UnimplementedOrderServer) TicketSeat(context.Context, *TicketSeatRequest) 
 }
 func (UnimplementedOrderServer) OrderCreate(context.Context, *OrderRequest) (*OrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OrderCreate not implemented")
+}
+func (UnimplementedOrderServer) OrderGen(context.Context, *OrderGenRequest) (*OrderGenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderGen not implemented")
 }
 func (UnimplementedOrderServer) mustEmbedUnimplementedOrderServer() {}
 
@@ -124,6 +140,24 @@ func _Order_OrderCreate_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Order_OrderGen_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrderGenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).OrderGen(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/order.Order/OrderGen",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).OrderGen(ctx, req.(*OrderGenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Order_ServiceDesc is the grpc.ServiceDesc for Order service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -138,6 +172,10 @@ var Order_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OrderCreate",
 			Handler:    _Order_OrderCreate_Handler,
+		},
+		{
+			MethodName: "OrderGen",
+			Handler:    _Order_OrderGen_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

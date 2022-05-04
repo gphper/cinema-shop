@@ -23,9 +23,20 @@ message OrderResponse{
   int64 ack = 1;
 }
 
+//生成订单及门票相关数据
+message OrderGenRequest{
+  string data = 1;
+}
+
+message OrderGenResponse{
+  string ack = 1;
+}
+
 service Order {
   //根据排片ID获取已被占用的座位
   rpc TicketSeat(TicketSeatRequest) returns(TicketSeatResponse);
   //创建订单
   rpc OrderCreate(OrderRequest) returns(OrderResponse);
+  //生成订单数据
+  rpc OrderGen(OrderGenRequest) returns(OrderGenResponse);
 }
