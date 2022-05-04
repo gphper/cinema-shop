@@ -58,13 +58,12 @@ end
 		args[2+k] = v
 	}
 	result, err := redisObj.Eval(script, []string{"seat:1"}, args...)
-
 	if err != nil && !errors.Is(err, redis.Nil) {
 		return resp, errors.Wrap(err, "Order RPC:OrderCreate [Redis Eval] DbError")
 	}
 
-	if result != nil {
-		return resp, errors.Wrap(err, "Buy Ticket Fail")
+	if result == "0" {
+		return resp, errors.New("The Selected Seat Is Occupied")
 	}
 
 	return &order.OrderResponse{

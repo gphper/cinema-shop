@@ -24,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type QueueClient interface {
 	//创建订单队列
 	OrderQueue(ctx context.Context, in *OrderCreateRequest, opts ...grpc.CallOption) (*OrderCreateResponse, error)
+	//自动取消未支付订单队列
+	OrderDelay(ctx context.Context, in *OrderDelayRequest, opts ...grpc.CallOption) (*OrderDelayResponse, error)
 }
 
 type queueClient struct {
@@ -43,12 +45,23 @@ func (c *queueClient) OrderQueue(ctx context.Context, in *OrderCreateRequest, op
 	return out, nil
 }
 
+func (c *queueClient) OrderDelay(ctx context.Context, in *OrderDelayRequest, opts ...grpc.CallOption) (*OrderDelayResponse, error) {
+	out := new(OrderDelayResponse)
+	err := c.cc.Invoke(ctx, "/queue.Queue/OrderDelay", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueueServer is the server API for Queue service.
 // All implementations must embed UnimplementedQueueServer
 // for forward compatibility
 type QueueServer interface {
 	//创建订单队列
 	OrderQueue(context.Context, *OrderCreateRequest) (*OrderCreateResponse, error)
+	//自动取消未支付订单队列
+	OrderDelay(context.Context, *OrderDelayRequest) (*OrderDelayResponse, error)
 	mustEmbedUnimplementedQueueServer()
 }
 
@@ -58,6 +71,9 @@ type UnimplementedQueueServer struct {
 
 func (UnimplementedQueueServer) OrderQueue(context.Context, *OrderCreateRequest) (*OrderCreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OrderQueue not implemented")
+}
+func (UnimplementedQueueServer) OrderDelay(context.Context, *OrderDelayRequest) (*OrderDelayResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderDelay not implemented")
 }
 func (UnimplementedQueueServer) mustEmbedUnimplementedQueueServer() {}
 
@@ -90,6 +106,24 @@ func _Queue_OrderQueue_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Queue_OrderDelay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrderDelayRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueueServer).OrderDelay(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/queue.Queue/OrderDelay",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueueServer).OrderDelay(ctx, req.(*OrderDelayRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Queue_ServiceDesc is the grpc.ServiceDesc for Queue service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +134,10 @@ var Queue_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OrderQueue",
 			Handler:    _Queue_OrderQueue_Handler,
+		},
+		{
+			MethodName: "OrderDelay",
+			Handler:    _Queue_OrderDelay_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

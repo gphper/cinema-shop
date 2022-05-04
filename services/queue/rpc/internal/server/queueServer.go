@@ -27,3 +27,9 @@ func (s *QueueServer) OrderQueue(ctx context.Context, in *queue.OrderCreateReque
 	l := logic.NewOrderQueueLogic(ctx, s.svcCtx)
 	return l.OrderQueue(in)
 }
+
+// 自动取消未支付订单队列
+func (s *QueueServer) OrderDelay(ctx context.Context, in *queue.OrderDelayRequest) (*queue.OrderDelayResponse, error) {
+	l := logic.NewOrderDelayLogic(ctx, s.svcCtx)
+	return l.OrderDelay(in)
+}

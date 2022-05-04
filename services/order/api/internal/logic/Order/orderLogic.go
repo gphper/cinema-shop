@@ -71,6 +71,7 @@ func (l *OrderLogic) Order(req *types.OrderReq) (resp *types.OrderResp, err erro
 		SeatMap:  req.SeatMap,
 		SeatNum:  screenResp.SeatNum,
 	})
+
 	if err != nil {
 		return resp, errorxx.NewCodeError(2001, err.Error())
 	}

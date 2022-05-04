@@ -15,7 +15,18 @@ message OrderCreateResponse {
   string order_key = 1;
 }
 
+//自动取消未支付订单队列
+message OrderDelayRequest{
+  int64 order_id = 1;
+}
+
+message OrderDelayResponse{
+  int64 ack = 1;
+}
+
 service Queue {
   //创建订单队列
   rpc OrderQueue(OrderCreateRequest) returns(OrderCreateResponse);
+  //自动取消未支付订单队列
+  rpc OrderDelay(OrderDelayRequest) returns(OrderDelayResponse);
 }
