@@ -28,6 +28,8 @@ type OrderClient interface {
 	OrderCreate(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderResponse, error)
 	//生成订单数据
 	OrderGen(ctx context.Context, in *OrderGenRequest, opts ...grpc.CallOption) (*OrderGenResponse, error)
+	//取消订单
+	OrderCancel(ctx context.Context, in *OrderCancelRequest, opts ...grpc.CallOption) (*OrderCancelResponse, error)
 }
 
 type orderClient struct {
@@ -65,6 +67,15 @@ func (c *orderClient) OrderGen(ctx context.Context, in *OrderGenRequest, opts ..
 	return out, nil
 }
 
+func (c *orderClient) OrderCancel(ctx context.Context, in *OrderCancelRequest, opts ...grpc.CallOption) (*OrderCancelResponse, error) {
+	out := new(OrderCancelResponse)
+	err := c.cc.Invoke(ctx, "/order.Order/OrderCancel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServer is the server API for Order service.
 // All implementations must embed UnimplementedOrderServer
 // for forward compatibility
@@ -75,6 +86,8 @@ type OrderServer interface {
 	OrderCreate(context.Context, *OrderRequest) (*OrderResponse, error)
 	//生成订单数据
 	OrderGen(context.Context, *OrderGenRequest) (*OrderGenResponse, error)
+	//取消订单
+	OrderCancel(context.Context, *OrderCancelRequest) (*OrderCancelResponse, error)
 	mustEmbedUnimplementedOrderServer()
 }
 
@@ -90,6 +103,9 @@ func (UnimplementedOrderServer) OrderCreate(context.Context, *OrderRequest) (*Or
 }
 func (UnimplementedOrderServer) OrderGen(context.Context, *OrderGenRequest) (*OrderGenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OrderGen not implemented")
+}
+func (UnimplementedOrderServer) OrderCancel(context.Context, *OrderCancelRequest) (*OrderCancelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderCancel not implemented")
 }
 func (UnimplementedOrderServer) mustEmbedUnimplementedOrderServer() {}
 
@@ -158,6 +174,24 @@ func _Order_OrderGen_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Order_OrderCancel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrderCancelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServer).OrderCancel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/order.Order/OrderCancel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServer).OrderCancel(ctx, req.(*OrderCancelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Order_ServiceDesc is the grpc.ServiceDesc for Order service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +210,10 @@ var Order_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OrderGen",
 			Handler:    _Order_OrderGen_Handler,
+		},
+		{
+			MethodName: "OrderCancel",
+			Handler:    _Order_OrderCancel_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

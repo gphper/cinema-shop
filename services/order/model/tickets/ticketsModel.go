@@ -2,6 +2,10 @@ package tickets
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
+	"reflect"
+	"strings"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -21,6 +25,7 @@ type (
 		SumBuilder(field string) squirrel.SelectBuilder
 		FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error)
 		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Tickets, error)
+		UpdateByOrderId(ctx context.Context, session sqlx.Session, order_id int64, data *Tickets) error
 	}
 
 	customTicketsModel struct {
@@ -56,7 +61,7 @@ func (m *defaultTicketsModel) FindCount(ctx context.Context, countBuilder squirr
 func (m *defaultTicketsModel) FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Tickets, error) {
 
 	if orderBy == "" {
-		rowBuilder = rowBuilder.OrderBy("id DESC")
+		rowBuilder = rowBuilder.OrderBy("ticket_id DESC")
 	} else {
 		rowBuilder = rowBuilder.OrderBy(orderBy)
 	}
@@ -74,6 +79,43 @@ func (m *defaultTicketsModel) FindAll(ctx context.Context, rowBuilder squirrel.S
 	default:
 		return nil, err
 	}
+}
+
+func (m *defaultTicketsModel) UpdateByOrderId(ctx context.Context, session sqlx.Session, order_id int64, data *Tickets) error {
+
+	fmt.Printf("%+v", *data)
+
+	t := reflect.TypeOf(*data)
+	v := reflect.ValueOf(*data)
+	sqlSlice := make([]string, 0)
+	params := make([]interface{}, 0)
+	for k := 0; k < t.NumField(); k++ {
+
+		if v.Field(k).Kind() == reflect.Struct {
+			if v.Field(k).FieldByName("Valid").Bool() {
+				sqlSlice = append(sqlSlice, fmt.Sprintf("%s = ?", t.Field(k).Tag.Get("db")))
+				params = append(params, v.Field(k).Field(0).Interface())
+			}
+			continue
+		}
+
+		if !v.Field(k).IsZero() {
+			sqlSlice = append(sqlSlice, fmt.Sprintf("%s = ?", t.Field(k).Tag.Get("db")))
+			params = append(params, v.Field(k).Interface())
+		}
+
+	}
+	sqlStr := strings.Join(sqlSlice, ",")
+
+	ticketsTicketIdKey := fmt.Sprintf("%s%v", cacheTicketsTicketIdPrefix, data.TicketId)
+	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set %s where `order_id` = %d", m.table, sqlStr, data.OrderId.Int64)
+		if session != nil {
+			return session.ExecCtx(ctx, query, params...)
+		}
+		return conn.ExecCtx(ctx, query, params...)
+	}, ticketsTicketIdKey)
+	return err
 }
 
 // export logic

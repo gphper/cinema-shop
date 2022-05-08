@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
 	"cinema-shop/services/order/rpc/internal/svc"
 	"cinema-shop/services/order/rpc/pb/order"
@@ -57,7 +58,10 @@ end
 	for k, v := range in.SeatMap {
 		args[2+k] = v
 	}
-	result, err := redisObj.Eval(script, []string{"seat:1"}, args...)
+
+	keys := make([]string, 1)
+	keys[0] = fmt.Sprintf("seat:%d", in.ScreenId)
+	result, err := redisObj.Eval(script, keys, args...)
 	if err != nil && !errors.Is(err, redis.Nil) {
 		return resp, errors.Wrap(err, "Order RPC:OrderCreate [Redis Eval] DbError")
 	}

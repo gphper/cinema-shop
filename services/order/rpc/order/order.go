@@ -13,12 +13,14 @@ import (
 )
 
 type (
-	OrderGenRequest    = order.OrderGenRequest
-	OrderGenResponse   = order.OrderGenResponse
-	OrderRequest       = order.OrderRequest
-	OrderResponse      = order.OrderResponse
-	TicketSeatRequest  = order.TicketSeatRequest
-	TicketSeatResponse = order.TicketSeatResponse
+	OrderCancelRequest  = order.OrderCancelRequest
+	OrderCancelResponse = order.OrderCancelResponse
+	OrderGenRequest     = order.OrderGenRequest
+	OrderGenResponse    = order.OrderGenResponse
+	OrderRequest        = order.OrderRequest
+	OrderResponse       = order.OrderResponse
+	TicketSeatRequest   = order.TicketSeatRequest
+	TicketSeatResponse  = order.TicketSeatResponse
 
 	Order interface {
 		// 根据排片ID获取已被占用的座位
@@ -27,6 +29,8 @@ type (
 		OrderCreate(ctx context.Context, in *OrderRequest, opts ...grpc.CallOption) (*OrderResponse, error)
 		// 生成订单数据
 		OrderGen(ctx context.Context, in *OrderGenRequest, opts ...grpc.CallOption) (*OrderGenResponse, error)
+		// 取消订单
+		OrderCancel(ctx context.Context, in *OrderCancelRequest, opts ...grpc.CallOption) (*OrderCancelResponse, error)
 	}
 
 	defaultOrder struct {
@@ -56,4 +60,10 @@ func (m *defaultOrder) OrderCreate(ctx context.Context, in *OrderRequest, opts .
 func (m *defaultOrder) OrderGen(ctx context.Context, in *OrderGenRequest, opts ...grpc.CallOption) (*OrderGenResponse, error) {
 	client := order.NewOrderClient(m.cli.Conn())
 	return client.OrderGen(ctx, in, opts...)
+}
+
+// 取消订单
+func (m *defaultOrder) OrderCancel(ctx context.Context, in *OrderCancelRequest, opts ...grpc.CallOption) (*OrderCancelResponse, error) {
+	client := order.NewOrderClient(m.cli.Conn())
+	return client.OrderCancel(ctx, in, opts...)
 }

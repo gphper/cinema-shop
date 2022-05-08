@@ -2,6 +2,10 @@ package orders
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
+	"reflect"
+	"strings"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -21,6 +25,7 @@ type (
 		SumBuilder(field string) squirrel.SelectBuilder
 		FindCount(ctx context.Context, countBuilder squirrel.SelectBuilder) (int64, error)
 		FindAll(ctx context.Context, rowBuilder squirrel.SelectBuilder, orderBy string) ([]*Orders, error)
+		UpdateSome(ctx context.Context, session sqlx.Session, data *Orders) error
 	}
 
 	customOrdersModel struct {
@@ -74,6 +79,44 @@ func (m *defaultOrdersModel) FindAll(ctx context.Context, rowBuilder squirrel.Se
 	default:
 		return nil, err
 	}
+}
+
+func (m *defaultOrdersModel) UpdateSome(ctx context.Context, session sqlx.Session, data *Orders) error {
+
+	t := reflect.TypeOf(*data)
+	v := reflect.ValueOf(*data)
+	sqlSlice := make([]string, 0)
+	params := make([]interface{}, 0)
+	for k := 0; k < t.NumField(); k++ {
+
+		if v.Field(k).Kind() == reflect.Struct {
+			if v.Field(k).FieldByName("Valid").Bool() {
+				sqlSlice = append(sqlSlice, fmt.Sprintf("%s = ?", t.Field(k).Tag.Get("db")))
+				params = append(params, v.Field(k).Field(0).Interface())
+			}
+			continue
+		}
+
+		if !v.Field(k).IsZero() {
+			sqlSlice = append(sqlSlice, fmt.Sprintf("%s = ?", t.Field(k).Tag.Get("db")))
+			params = append(params, v.Field(k).Interface())
+		}
+
+	}
+
+	ordersOrderIdKey := fmt.Sprintf("%s%v", cacheOrdersOrderIdPrefix, data.OrderId)
+	_, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
+		query := fmt.Sprintf("update %s set %s where `order_id` = %d", m.table, strings.Join(sqlSlice, ","), data.OrderId)
+		if session != nil {
+			return session.ExecCtx(ctx, query, params...)
+		}
+		return conn.ExecCtx(ctx, query, params...)
+	}, ordersOrderIdKey)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // export logic

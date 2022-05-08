@@ -39,3 +39,9 @@ func (s *OrderServer) OrderGen(ctx context.Context, in *order.OrderGenRequest) (
 	l := logic.NewOrderGenLogic(ctx, s.svcCtx)
 	return l.OrderGen(in)
 }
+
+// 取消订单
+func (s *OrderServer) OrderCancel(ctx context.Context, in *order.OrderCancelRequest) (*order.OrderCancelResponse, error) {
+	l := logic.NewOrderCancelLogic(ctx, s.svcCtx)
+	return l.OrderCancel(in)
+}
