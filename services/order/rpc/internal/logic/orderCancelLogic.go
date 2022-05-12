@@ -34,7 +34,18 @@ func NewOrderCancelLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Order
 // 取消订单
 func (l *OrderCancelLogic) OrderCancel(in *order.OrderCancelRequest) (*order.OrderCancelResponse, error) {
 
-	err := l.svcCtx.OrdersModel.Trans(l.ctx, func(context context.Context, session sqlx.Session) error {
+	orderInfo, err := l.svcCtx.OrdersModel.FindOne(l.ctx, in.OrderId)
+	if err != nil {
+		return nil, err
+	}
+
+	if orderInfo.Status.Int64 == global.ORDER_FINISH {
+		return &order.OrderCancelResponse{
+			Ack: "1",
+		}, nil
+	}
+
+	err = l.svcCtx.OrdersModel.Trans(l.ctx, func(context context.Context, session sqlx.Session) error {
 		if err := l.svcCtx.OrdersModel.UpdateSome(context, session, &orders.Orders{
 			OrderId: in.OrderId,
 			Status: sql.NullInt64{
