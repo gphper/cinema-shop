@@ -2,6 +2,22 @@
 
 基于 go-zero 开发的影票售卖系统
 
+### 目录结构
+
+├── apidoc  // 包含postman文件
+├── common  // 公共方法
+├── services // 服务
+
+├           ├── cinema  // 影片影院相关服务
+
+├           ├── order  //订单服务
+
+├           ├── usercenter  // 用户服务
+
+├           ├── queue  // 队列服务
+
+├── seed // 数据填充
+
 ### 开发工具的使用
 
 使用make工具解决每次生成代码运行实例时需要输入很多参数的问题
@@ -37,8 +53,6 @@ make order-gen-model-order
 ### 可能用到的
 
  `mysql`  `redis`  `etcd` `rebbitmq`
-
-
 
 ### 数据表设计
 
