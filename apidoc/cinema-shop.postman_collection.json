@@ -1,0 +1,424 @@
+{
+	"info": {
+		"_postman_id": "8c28cf21-e4f4-4dbd-ad52-fdaf97421de7",
+		"name": "cinema-shop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "用户",
+			"item": [
+				{
+					"name": "登录",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\":\"570165887@qq.com\",\"password\":\"123456\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8888/api/user/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"user",
+								"login"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "570165887@qq.com",
+									"disabled": true
+								},
+								{
+									"key": "password",
+									"value": "111111",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "注册",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\":\"570165887@qq.com\",\"password\":\"123456\",\"name\":\"gphper\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8888/api/user/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "刷新token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"ref_token\":\"88f433da-e9c9-4da7-81f7-0a5970e2a9c6\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8888/api/user/refresh",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"user",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取用户信息",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTAwMzc0NzMsImlhdCI6MTY1MDAzMDI3MywidXNlcklkIjo2fQ.MRsotXEHDAzbJfGAFsHHj_cxhacpkuNHiuTLlz-mkvE",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8888/api/user/get_user_info",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"user",
+								"get_user_info"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "影片",
+			"item": [
+				{
+					"name": "影片",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8889/api/film/v1/list/1/1/10",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8889",
+							"path": [
+								"api",
+								"film",
+								"v1",
+								"list",
+								"1",
+								"1",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "影片详情",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8889/api/film/v1/detail/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8889",
+							"path": [
+								"api",
+								"film",
+								"v1",
+								"detail",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "排片",
+			"item": [
+				{
+					"name": "获取排片的影院",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"t_date\":\"2022-04-30\",\"film_id\":1,\"city_code\":\"33\",\"area_code\":\"44\"}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8889/api/screen/v1/screen_cinema_info",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8889",
+							"path": [
+								"api",
+								"screen",
+								"v1",
+								"screen_cinema_info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据日期、影院ID、影片ID获取排片场次",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"t_date\":\"2022-05-01\",\"cinema_id\":1,\"film_id\":1}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8889/api/screen/v1/screen_list",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8889",
+							"path": [
+								"api",
+								"screen",
+								"v1",
+								"screen_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取排片详情",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"screen_id\":1}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8889/api/screen/v1/screen_detail",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8889",
+							"path": [
+								"api",
+								"screen",
+								"v1",
+								"screen_detail"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "影院",
+			"item": [
+				{
+					"name": "获取影院详情(包含影片)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"cinema_id\":1}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8889/api/cinema/v1/cinema_detail",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8889",
+							"path": [
+								"api",
+								"cinema",
+								"v1",
+								"cinema_detail"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "订单",
+			"item": [
+				{
+					"name": "下单",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTE2NjA3MzYsImlhdCI6MTY1MTY1MzUzNiwidXNlcklkIjo2fQ.FUVnyuGBjFBA9kqVOcV6UeCxpxj87NyRsY5SIwi5qck",
+								"type": "default"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"screen_id\":1,\"seat_map\":[\"2#1\",\"3#1\"]}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8890/api/order/v1/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8890",
+							"path": [
+								"api",
+								"order",
+								"v1",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
