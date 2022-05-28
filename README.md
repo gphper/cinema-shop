@@ -4,19 +4,16 @@
 
 ### 目录结构
 
-├── apidoc  // 包含postman文件
-├── common  // 公共方法
+```
+├── apidoc // 包含postman文件
+├── common // 公共方法
 ├── services // 服务
-
-├           ├── cinema  // 影片影院相关服务
-
-├           ├── order  //订单服务
-
-├           ├── usercenter  // 用户服务
-
-├           ├── queue  // 队列服务
-
-├── seed // 数据填充
+│   ├── cinema // 影片影院相关服务
+│   ├── order //订单服务
+│   ├── usercenter // 用户服务
+│   └── queue // 队列服务
+└── seed // 数据填充
+```
 
 ### 开发工具的使用
 
