@@ -35,7 +35,7 @@ message OrderGenResponse{
 
 //取消订单
 message OrderCancelRequest{
-  int64 order_id = 1;
+  string data = 1;
 }
 
 message OrderCancelResponse{

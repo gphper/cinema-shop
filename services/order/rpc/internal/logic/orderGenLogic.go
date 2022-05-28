@@ -56,16 +56,16 @@ func NewOrderGenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OrderGen
 // 生成订单数据
 func (l *OrderGenLogic) OrderGen(in *order.OrderGenRequest) (*order.OrderGenResponse, error) {
 
-	fmt.Println("&&&&&&&&&&&&&&&&&&")
 	var orderMsg OrderMessage
+	var orderId int64
 
 	err := json.Unmarshal([]byte(in.Data), &orderMsg)
 	if err != nil {
 		return &order.OrderGenResponse{}, err
 	}
-	fmt.Println("************")
-	fmt.Println(orderMsg)
+
 	err = l.svcCtx.OrdersModel.Trans(l.ctx, func(context context.Context, session sqlx.Session) error {
+
 		order := new(orders.Orders)
 		order.Amount = sql.NullInt64{
 			Int64: orderMsg.Amount,
@@ -102,14 +102,14 @@ func (l *OrderGenLogic) OrderGen(in *order.OrderGenRequest) (*order.OrderGenResp
 			return err
 		}
 
-		order_id, err := orderResult.LastInsertId()
+		orderId, err = orderResult.LastInsertId()
 		if err != nil {
 			return err
 		}
 
 		ticket := new(tickets.Tickets)
 		ticket.OrderId = sql.NullInt64{
-			Int64: order_id,
+			Int64: orderId,
 			Valid: true,
 		}
 		ticket.ScreenId = sql.NullInt64{
@@ -144,7 +144,10 @@ func (l *OrderGenLogic) OrderGen(in *order.OrderGenRequest) (*order.OrderGenResp
 		return &order.OrderGenResponse{}, nil
 	}
 
-	return &order.OrderGenResponse{}, nil
+	return &order.OrderGenResponse{
+		OrderId: orderId,
+		Ack:     "1",
+	}, nil
 }
 
 func (l *OrderGenLogic) genOrderSn() string {

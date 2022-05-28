@@ -4,16 +4,18 @@ import (
 	"cinema-shop/services/order/rpc/order"
 	"cinema-shop/services/queue/consumer/config"
 	"cinema-shop/services/queue/rabbitmq"
+	"cinema-shop/services/queue/rpc/queue"
 	"context"
 	"flag"
 	"fmt"
 	"log"
 
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
-var configFile = flag.String("f", "./etc/consumer.yaml", "the config file")
+var configFile = flag.String("f", "../../etc/consumer.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -39,19 +41,30 @@ func main() {
 	forever := make(chan bool)
 
 	orderRpc := order.NewOrder(zrpc.MustNewClient(c.OrderRpcConf))
+	queueRpc := queue.NewQueue(zrpc.MustNewClient(c.QueueRpcConf))
 	go func() {
 		for d := range msgChan {
 			log.Printf("收到消息: %s", d.Body)
 
 			//处理生成订单操作
-			_, err := orderRpc.OrderGen(context.Background(), &order.OrderGenRequest{
+			orderInfo, err := orderRpc.OrderGen(context.Background(), &order.OrderGenRequest{
 				Data: string(d.Body),
 			})
 			if err != nil {
-				fmt.Println(err)
+				logx.Error(err)
+				continue
+			}
+			fmt.Println(orderInfo.OrderId)
+			//将生成的未支付订单放入延迟队列
+			_, err = queueRpc.OrderDelay(context.Background(), &queue.OrderDelayRequest{
+				OrderId: orderInfo.OrderId,
+			})
+			if err != nil {
+				logx.Error(err)
+				continue
 			}
 
-			// d.Ack(true)
+			d.Ack(true)
 		}
 	}()
 

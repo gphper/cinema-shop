@@ -7,3 +7,8 @@ OrderRpcConf:
     Hosts:
     - 127.0.0.1:2379
     Key: order.rpc
+QueueRpcConf:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: queue.rpc

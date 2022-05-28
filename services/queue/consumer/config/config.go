@@ -12,4 +12,5 @@ type RabbitMqConf struct {
 type Config struct {
 	RabbitMq     RabbitMqConf
 	OrderRpcConf zrpc.RpcClientConf
+	QueueRpcConf zrpc.RpcClientConf
 }

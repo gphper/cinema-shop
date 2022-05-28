@@ -30,7 +30,7 @@ func NewOrderDelayLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OrderD
 func (l *OrderDelayLogic) OrderDelay(in *queue.OrderDelayRequest) (*queue.OrderDelayResponse, error) {
 	var (
 		exchange   = "exchange_order_delay"
-		routingKey = "order_delay_queue"
+		routingKey = "order_delay"
 	)
 
 	type OrderMessage struct {
@@ -46,6 +46,9 @@ func (l *OrderDelayLogic) OrderDelay(in *queue.OrderDelayRequest) (*queue.OrderD
 		return &queue.OrderDelayResponse{}, errors.Wrap(err, "Queue RPC:OrderQueue [Marshal Err] Error")
 	}
 
+	headers := make(amqp.Table)
+	headers["x-delay"] = 600000
+
 	err = l.svcCtx.OrderRabbitMq.Channel.Publish(
 		exchange,   // 交换器名
 		routingKey, // routing key
@@ -54,15 +57,14 @@ func (l *OrderDelayLogic) OrderDelay(in *queue.OrderDelayRequest) (*queue.OrderD
 		amqp.Publishing{ // 发送的消息，固定有消息体和一些额外的消息头，包中提供了封装对象
 			ContentType: "application/json", // 消息内容的类型
 			Body:        msgJson,            // 消息内容
-			Headers: map[string]interface{}{
-				"x-delay": "10000", // 消息从交换机过期时间,毫秒（x-dead-message插件提供）
-			},
+			Headers:     headers,
 		},
 	)
-
 	if err != nil {
 		return nil, errors.Wrap(err, "Queue RPC:OrderQueue [Publish Message Fail] Error")
 	}
 
-	return &queue.OrderDelayResponse{}, nil
+	return &queue.OrderDelayResponse{
+		Ack: 1,
+	}, nil
 }
