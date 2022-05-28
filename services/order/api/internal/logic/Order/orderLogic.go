@@ -3,7 +3,6 @@ package Order
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -56,9 +55,6 @@ func (l *OrderLogic) Order(req *types.OrderReq) (resp *types.OrderResp, err erro
 	row := len(seatMap)
 	col := len(seatMap[0])
 
-	fmt.Println(col)
-	fmt.Println(row)
-	fmt.Println(req.SeatMap)
 	if len(req.SeatMap) > 0 {
 		for _, v := range req.SeatMap {
 			seatArr := strings.Split(v, "#")

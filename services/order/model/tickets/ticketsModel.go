@@ -83,8 +83,6 @@ func (m *defaultTicketsModel) FindAll(ctx context.Context, rowBuilder squirrel.S
 
 func (m *defaultTicketsModel) UpdateByOrderId(ctx context.Context, session sqlx.Session, order_id int64, data *Tickets) error {
 
-	fmt.Printf("%+v", *data)
-
 	t := reflect.TypeOf(*data)
 	v := reflect.ValueOf(*data)
 	sqlSlice := make([]string, 0)

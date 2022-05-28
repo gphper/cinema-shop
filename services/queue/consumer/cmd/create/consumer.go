@@ -54,7 +54,6 @@ func main() {
 				logx.Error(err)
 				continue
 			}
-			fmt.Println(orderInfo.OrderId)
 			//将生成的未支付订单放入延迟队列
 			_, err = queueRpc.OrderDelay(context.Background(), &queue.OrderDelayRequest{
 				OrderId: orderInfo.OrderId,

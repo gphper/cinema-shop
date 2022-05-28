@@ -2,7 +2,6 @@ package Screen
 
 import (
 	"context"
-	"fmt"
 
 	"cinema-shop/services/cinema/api/internal/svc"
 	"cinema-shop/services/cinema/api/internal/types"
@@ -66,7 +65,6 @@ func (l *ScreenCinemaInfoLogic) ScreenCinemaInfo(req *types.ScreenCinemaInfoReq)
 		return
 	}
 
-	fmt.Println(screenCinemaInfoResp.Data)
 	if len(screenCinemaInfoResp.Data) > 0 {
 		data = make([]types.ScreenCinemaInfo, len(screenCinemaInfoResp.Data))
 		for k, v := range screenCinemaInfoResp.Data {
