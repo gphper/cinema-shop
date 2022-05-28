@@ -26,13 +26,13 @@ make order-gen-model-order
 
 ### 功能模块：
 
-- [ ] 用户中心
+- :white_check_mark: 用户中心
 
-- [ ] 影片相关服务
+- :white_check_mark: 影片相关服务
 
-- [ ] 支付中心
+- :white_check_mark: 订单服务
 
-- [ ] 订单服务
+- :black_square_button: 支付中心
 
 ### 可能用到的
 
