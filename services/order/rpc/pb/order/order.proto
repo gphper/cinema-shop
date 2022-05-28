@@ -21,7 +21,6 @@ message OrderRequest{
 
 message OrderResponse{
   int64 ack = 1;
-  int64 order_id = 2;
 }
 
 //生成订单及门票相关数据
@@ -31,6 +30,7 @@ message OrderGenRequest{
 
 message OrderGenResponse{
   string ack = 1;
+  int64 order_id = 2;
 }
 
 //取消订单
