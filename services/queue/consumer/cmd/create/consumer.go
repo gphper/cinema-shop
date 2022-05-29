@@ -51,6 +51,7 @@ func main() {
 				Data: string(d.Body),
 			})
 			if err != nil {
+				d.Nack(true, true)
 				logx.Error(err)
 				continue
 			}
@@ -59,6 +60,7 @@ func main() {
 				OrderId: orderInfo.OrderId,
 			})
 			if err != nil {
+				d.Nack(true, true)
 				logx.Error(err)
 				continue
 			}
