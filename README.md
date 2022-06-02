@@ -37,6 +37,22 @@ make order-run-api
 make order-gen-model-order
 ```
 
+### 一键启动
+
+安装modd工具
+
+```
+go install github.com/cortesi/modd/cmd/modd
+```
+
+执行命令
+
+```
+modd
+```
+
+
+
 ### 功能模块：
 
 - :white_check_mark: 用户中心
